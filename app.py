@@ -3,11 +3,10 @@ import random
 import plotly.graph_objs as go
 import json
 from plotly.utils import PlotlyJSONEncoder  # Correct import for JSON encoder
+from datamanager import *
+from financiallogic import *
 
 app = Flask(__name__)
-
-PREIS_ANSTIEG_FAKTOR = 1.05
-PREIS_ABSTIEG_FAKTOR = 0.95
 
 # Generate random data for the graph
 def generate_data():
