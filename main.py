@@ -1,68 +1,60 @@
 import tkinter as tk
 from tkinter import ttk
-import random
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-from collections import deque
+import random
 
-# Initiale Preise für die Getränke festlegen
-prices = {
-    "Wasser": 1.00,
-    "Cola": 2.00,
-    "Bier": 3.00,
-    "Wein": 5.00,
-    "Whiskey": 10.00
-}
+# Variables for the graph (you can replace this with actual data)
+variables = [random.randint(1, 10) for _ in range(6)]
 
-# Speichert die Preisgeschichte jedes Getränks für die Grafik
-price_history = {drink: deque([price], maxlen=50) for drink, price in prices.items()}
-
-# Funktion, die den Preis nach einem Kauf erhöht und andere senkt
-def buy_drink(drink_name):
-    if drink_name in prices:
-        # Preis des gekauften Getränks erhöhen
-        prices[drink_name] = round(prices[drink_name] * 1.05, 2)
-        # Andere Getränke im Preis leicht senken
-        for other_drink in prices:
-            if other_drink != drink_name:
-                prices[other_drink] = round(prices[other_drink] * 0.98, 2)
-        # Preis zur Historie hinzufügen
-        for drink in prices:
-            price_history[drink].append(prices[drink])
-        # Grafik aktualisieren
-        update_plot()
-
-# Aktualisierung der Grafik
-def update_plot():
+# Function to update the graph in the secondary window
+def update_graph():
+    # Clear the current plot
     ax.clear()
-    ax.set_title("Preisverlauf der Getränke")
-    ax.set_xlabel("Käufe")
-    ax.set_ylabel("Preis in €")
-    # Preise der letzten 50 Schritte für jedes Getränk plotten
-    for drink, history in price_history.items():
-        ax.plot(list(history), label=drink)
-    ax.legend()
+    # Update the variables with new random values for demonstration
+    global variables
+    variables = [random.randint(1, 10) for _ in range(6)]
+    # Plot the updated data
+    ax.bar(range(1, 7), variables, tick_label=["Var1", "Var2", "Var3", "Var4", "Var5", "Var6"])
+    ax.set_ylim(0, 10)
+    ax.set_title("Variable Values")
+    # Redraw the canvas
     canvas.draw()
+    # Schedule the next update after 30 seconds
+    root.after(30000, update_graph)
 
-# GUI einrichten
+# Function to handle button clicks
+def button_click(button_id):
+    print(f"Button {button_id} clicked")
+
+# Create the main window for buttons
 root = tk.Tk()
-root.title("Getränke-Börse Simulation")
-root.geometry("800x600")
+root.title("Main Window - Buttons")
+root.geometry("300x200")
 
-# Matplotlib-Figur für den Plot
-fig, ax = plt.subplots(figsize=(8, 5))
-canvas = FigureCanvasTkAgg(fig, master=root)
-canvas.get_tk_widget().pack()
+# Create and pack six buttons
+for i in range(1, 7):
+    button = ttk.Button(root, text=f"Button {i}", command=lambda i=i: button_click(i))
+    button.pack(pady=5)
 
-# Buttons für jedes Getränk erstellen
-frame = ttk.Frame(root)
-frame.pack(pady=20)
-for drink in prices.keys():
-    button = ttk.Button(frame, text=f"Kaufe {drink}", command=lambda d=drink: buy_drink(d))
-    button.pack(side=tk.LEFT, padx=10)
+# Create the secondary window for the graph
+toplevel = tk.Toplevel(root)
+toplevel.title("Secondary Window - Graph")
+toplevel.geometry("400x300")
 
-# Initiale Grafik anzeigen
-update_plot()
+# Set up the matplotlib figure and axes for the bar graph
+fig, ax = plt.subplots()
+ax.bar(range(1, 7), variables, tick_label=["Var1", "Var2", "Var3", "Var4", "Var5", "Var6"])
+ax.set_ylim(0, 10)
+ax.set_title("Variable Values")
 
-# GUI-Schleife starten
+# Create a FigureCanvasTkAgg widget to display the plot in the tkinter window
+canvas = FigureCanvasTkAgg(fig, master=toplevel)
+canvas.draw()
+canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
+
+# Start the graph update loop
+update_graph()
+
+# Run the main loop
 root.mainloop()
