@@ -8,25 +8,33 @@
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </head>
 <body>
-    <div class="container card shadow p-4 mx-auto my-auto">
+    <div class="container card shadow p-4 mx-auto my-5">
         <div id="header" class="container">
             <h1>Bierbörse Stelli 2024</h1>
         </div>
+        <div class="row alert alert-dark">
+            <div class="col-6">
+                <div id="graph"></div>
+        
+                <script>
+                    // Plotly data passed from Flask
+                    const graphData = {{ graph_json|safe }};
+                    
+                    // Render the Plotly chart
+                    Plotly.newPlot('graph', graphData);
+        
+                    // Refresh the page every 30 seconds
+                    setInterval(() => {
+                        window.location.reload();
+                    }, 30000);
+                </script>
+            </div>
+            <div class="col">
+                <h4>Preisliste</h4>
+                <p>Preis 1</p>
+            </div>
+        </div>
         <div id="content" class="container">
-            <div id="graph"></div>
-    
-            <script>
-                // Plotly data passed from Flask
-                const graphData = {{ graph_json|safe }};
-                
-                // Render the Plotly chart
-                Plotly.newPlot('graph', graphData);
-    
-                // Refresh the page every 30 seconds
-                setInterval(() => {
-                    window.location.reload();
-                }, 30000);
-            </script>
         </div>
     </div>
 </body>
