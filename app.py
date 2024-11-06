@@ -13,27 +13,6 @@ PREIS_ABSTIEG_FAKTOR = 0.95
 def generate_data():
     return [random.randint(1, 10) for _ in range(6)]
 
-def initialized_prices():
-    beverages = [
-        {"name": "Astra/Flens", "preis": 1.50, "min": 1.00, "max": 10.00},
-        {"name": "Shot", "preis": 1.00, "min": 1.00, "max": 10.00},
-        {"name": "Helles/Weizen", "preis": 2.00, "min": 1.00, "max": 10.00},
-        {"name": "Mische", "preis": 3.00, "min": 1.00, "max": 10.00},
-        {"name": "Cider", "preis": 2.00, "min": 1.00, "max": 10.00},
-        {"name": "Bachwasser", "preis": 2.00, "min": 1.00, "max": 10.00}
-    ]
-    return beverages
-
-
-def buy_beverage(beverages, target_beverage_name):
-    for beverage in beverages:
-        if beverage.name == target_beverage_name:
-            beverage.preis *= PREIS_ANSTIEG_FAKTOR
-        else:
-            beverage.preis *= PREIS_ANSTIEG_FAKTOR
-
-
-
 @app.route('/')
 def button_page():
     # Render the page with six buttons
