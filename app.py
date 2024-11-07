@@ -108,7 +108,7 @@ def graph_page():
 
 @app.route('/process_input', methods=['POST'])
 def process_input():
-    print(request)
+    print(request.get_json())
 
     return "success"
 
