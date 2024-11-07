@@ -9,9 +9,20 @@
 <body>
     <div class="container card shadow p-4 mx-auto my-5">
         <h1 class="mb-3 text-center">Bier Broker</h1>
+
+                <div class="card my-2" style = "width:6rem; height:2rem;">
+                    <div class="card-body p-0">
+                        <div class="container timer-container">
+                            <!-- Timer-Anzeige -->
+                            <div class="timer-display" id="timerDisplay">Timer</div>
+                        </div>
+                    </div>
+                </div>
+
+
         <div id="buttons" class="mb-3">
             <div class="row">
-                
+
                 <div class="col">
                     <div class="row alert alert-dark mx-auto">
                         <div class="col-4">
@@ -97,7 +108,7 @@
                             <h3 class="label label-primary">Bachwasser</h3>
                         </div>
                         <div class="col-6">
-                            <input type="number" id="bachwasser_anzahl" min="0" value="0" oninput="calculateTotalPrice()" oninput="calculateTotalPrice()">
+                            <input type="number" id="bachwasser_anzahl" min="0" value="0" oninput="calculateTotalPrice()">
                         </div>
                         <div class="col">
                             <span id="bachwasser_preis">2.00</span>
@@ -130,22 +141,20 @@
         // Config //
         ////////////
         const config = {{ config|tojson|safe }}
-        const refreshTimer_s = config.intervall_s;
+        const refreshTimer_s = 5; //config.intervall_s;
 
         ///////////
         // Timer //
         ///////////
         let seconds = refreshTimer_s;
-
-        // timer = setInterval(function() {
-        //     seconds--;
-        //     let minutes = Math.floor(seconds / 60);  // Minuten berechnen
-        //     let displaySeconds = seconds % 60;  // Sekunden berechnen
-
-        //     // Timer im Format MM:SS anzeigen
-        //     document.getElementById('timerDisplay').textContent =
-        //         `${minutes.toString().padStart(2, '0')}:${displaySeconds.toString().padStart(2, '0')}`;
-        // }, 1000);
+        timer = setInterval(function() {
+            seconds--;
+            let minutes = Math.floor(seconds / 60);  // Minuten berechnen
+            let displaySeconds = seconds % 60;  // Sekunden berechnen
+            // Timer im Format MM:SS anzeigen
+            document.getElementById('timerDisplay').textContent =
+                `${minutes.toString().padStart(2, '0')}:${displaySeconds.toString().padStart(2, '0')}`;
+        }, 1000);
 
 
         //////////////////
@@ -191,6 +200,7 @@
                 (bachwasser_price * bachwasserCount);
 
             document.getElementById('price_total').innerText = totalPrice.toFixed(2);
+
         }
 
         function invest() {

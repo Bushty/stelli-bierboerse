@@ -150,7 +150,7 @@ def handle_sales(sales_numbers):
     current_prices = get_current_prices()
 
     # neue Preise berechnen lassen
-    new_prices = calculate_financials(sales_numbers)
+    new_prices = calculate_financials(sales_numbers, get_history_data(), get_config())
 
     write_history_change(new_prices)
 

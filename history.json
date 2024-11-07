@@ -1,6 +1,7 @@
 {
     "config": {
         "intervall_s": 300.0,
+        "show_history_h": 2,
         "factor_price_increase": 1.05,
         "factor_price_decrease": 0.95,
         "beverages": [
