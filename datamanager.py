@@ -1,6 +1,7 @@
 import os
 import json
 import time
+import financiallogic
 
 jsonPath = "./history.json"
 
@@ -122,14 +123,16 @@ def get_config():
     return data['config']
 
 
-def write_history_change():
+
+
+
+def write_history_change_test():
     check_history_exists()
     current_time = time.strftime("%H:%M", time.localtime())
     data = get_history_data()
     data["history"]["time"].append(current_time)
-    test_price = 0.93
     for beverage in data["history"]["beverages"]:
-        beverage["prices"].append(test_price)
+        beverage["prices"].append(financiallogic.get_random_price())
 
     with open(jsonPath, 'w') as file:
         json.dump(data, file, indent=4)
@@ -139,4 +142,4 @@ def write_history_change():
 
 
 if __name__ == '__main__':
-    write_history_change()
+    write_history_change_test()
