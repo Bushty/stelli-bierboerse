@@ -1,0 +1,97 @@
+import os
+import json
+
+def check_history_exists():
+    current_directory = os.path.dirname(os.path.abspath(__file__))
+    file_name = "history.json"
+    file_path = os.path.join(current_directory, file_name)
+    if not os.path.exists(file_path):
+        data = {
+            "config": {
+                "intervall_s": 300.0,
+                "factor_price_increase": 1.05,
+                "factor_price_decrease": 0.95,
+                "beverages": [
+                    {
+                        "name": "Bier 0.3l",
+                        "default_price": 1.5,
+                        "price_min": 0.5,
+                        "price_max": 10.0
+                    },
+                    {
+                        "name": "Bier 0.5l",
+                        "default_price": 2.0,
+                        "price_min": 0.8,
+                        "price_max": 10.0
+                    },
+                    {
+                        "name": "Cider",
+                        "default_price": 2.0,
+                        "price_min": 1.0,
+                        "price_max": 10.0
+                    },
+                    {
+                        "name": "Mische",
+                        "default_price": 3.0,
+                        "price_min": 1.5,
+                        "price_max": 10.0
+                    },
+                    {
+                        "name": "Bachwasser",
+                        "default_price": 2.0,
+                        "price_min": 1.0,
+                        "price_max": 10.0
+                    },
+                    {
+                        "name": "Shot",
+                        "default_price": 1.0,
+                        "price_min": 0.5,
+                        "price_max": 10.0
+                    },
+
+
+                ]
+            },
+            "history": [
+                {
+                    "time": 0,
+                    "prices": [
+                        {
+                            "name": "Bier 0.3L",
+                            "price": 1.5
+                        },
+                        {
+                            "name": "Bier 0.5L",
+                            "price": 2.0
+                        },
+                        {
+                            "name": "Cider",
+                            "price": 2.0
+                        },
+                        {
+                            "name": "Mische",
+                            "price": 3.0
+                        },
+                        {
+                            "name": "Bachwasser",
+                            "price": 2.0
+                        },
+                        {
+                            "name": "Shot",
+                            "price": 1.0
+                        }
+                    ]
+                }
+            ]
+        }
+        with open(file_path, 'w') as file:
+            json.dump(data, file, indent=4)
+
+
+
+
+
+
+
+if __name__ == '__main__':
+    check_history_exists()

@@ -17,10 +17,11 @@
                             <h3 class="label label-primary">Bier 0,3l</h3>
                         </div>
                         <div class="col-6">
-                            <input type="number" name="anzahl" min="0">
+                            <input type="number" name="anzahl" min="0" oninput="calculateTotalPrice()">
                         </div>
                         <div class="col">
-                            bier_preis €
+                            <span id="bier_price">1.50</span>
+                            <span>€</span>
                         </div>
                     </div>
                 </div>
@@ -30,10 +31,11 @@
                             <h3 class="label label-primary">Bier 0,5l</h3>
                         </div>
                         <div class="col-6">
-                            <input type="number" name="anzahl" min="0">
+                            <input type="number" name="anzahl" min="0" oninput="calculateTotalPrice()">
                         </div>
                         <div class="col">
-                            bier_big_preis €
+                            <span id="bier_big_price">2.00</span>
+                            <span>€</span>
                         </div>
                     </div>
                 </div>
@@ -45,10 +47,11 @@
                             <h3 class="label label-primary">Mische</h3>
                         </div>
                         <div class="col-6">
-                            <input type="number" name="anzahl" min="0">
+                            <input type="number" name="anzahl" min="0" oninput="calculateTotalPrice()">
                         </div>
                         <div class="col">
-                            mische_preis €
+                            <span id="mische_price">3.00</span>
+                            <span>€</span>
                         </div>
                     </div>
                 </div>
@@ -58,10 +61,11 @@
                             <h3 class="label label-primary">Shot</h3>
                         </div>
                         <div class="col-6">
-                            <input type="number" name="anzahl" min="0">
+                            <input type="number" name="anzahl" min="0" oninput="calculateTotalPrice()">
                         </div>
                         <div class="col">
-                            shot_preis €
+                            <span id="shot_price">1.00</span>
+                            <span>€</span>
                         </div>
                     </div>
                 </div>
@@ -73,10 +77,11 @@
                             <h3 class="label label-primary">Cider</h3>
                         </div>
                         <div class="col-6">
-                            <input type="number" name="anzahl" min="0">
+                            <input type="number" name="anzahl" min="0" oninput="calculateTotalPrice()">
                         </div>
                         <div class="col">
-                            cider_preis €
+                            <span id="cider_preis">2.00</span>
+                            <span>€</span>
                         </div>
                     </div>
                 </div>
@@ -86,10 +91,11 @@
                             <h3 class="label label-primary">Bachwasser</h3>
                         </div>
                         <div class="col">
-                            <input type="number" name="anzahl" min="0">
+                            <input type="number" name="anzahl" min="0" oninput="calculateTotalPrice()" oninput="calculateTotalPrice()">
                         </div>
                         <div class="col">
-                            bachwasser_preis €
+                            <span id="bachwasser_preis">2.00</span>
+                            <span>€</span>
                         </div>
                     </div>
                 </div>
@@ -101,7 +107,7 @@
                     <label class="h4">Gesamt Preis</label>
                 </div>
                 <div class="col-6">
-                    <label class="h4">(gesamtpreis)</label>
+                    <label id="price_total" class="h4"></label>
                     <span class="h4">€</span>
                 </div>
                 <div class="col">
@@ -111,19 +117,79 @@
         </div>
         
     </div>
-    <!-- <div id="buttons">
-        <button onclick="buttonClick(1)">Button 1</button>
-        <button onclick="buttonClick(2)">Button 2</button>
-        <button onclick="buttonClick(3)">Button 3</button>
-        <button onclick="buttonClick(4)">Button 4</button>
-        <button onclick="buttonClick(5)">Button 5</button>
-        <button onclick="buttonClick(6)">Button 6</button>
-    </div> -->
 
     <script>
-        function buttonClick(buttonId) {
-            alert(`Button ${buttonId} clicked`);
-            // Here, you could add an AJAX request to handle clicks on the server side
+        function updatePrices() {
+            // Fetch updated prices every 5 minutes
+            fetch('/update_prices')  // Assumes an endpoint exists to provide updated prices
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('bier_price').innerText = data.bier_03;
+                    document.getElementById('bier_big_price').innerText = data.bier_05;
+                    document.getElementById('mische_price').innerText = data.mische;
+                    document.getElementById('shot_price').innerText = data.shot;
+                    document.getElementById('cider_preis').innerText = data.cider;
+                    document.getElementById('bachwasser_preis').innerText = data.bachwasser;
+                })
+                .catch(error => console.error('Error fetching prices:', error));
+        }
+
+        setInterval(updatePrices, 5 * 60 * 1000); // Update prices every 5 minutes
+
+        function calculateTotalPrice() {
+            const bier03Price = parseFloat(document.getElementById('bier_price').innerText);
+            const bier05Price = parseFloat(document.getElementById('bier_big_price').innerText);
+            const mischePrice = parseFloat(document.getElementById('mische_price').innerText);
+            const shotPrice = parseFloat(document.getElementById('shot_price').innerText);
+            const ciderPrice = parseFloat(document.getElementById('cider_preis').innerText);
+            const bachwasserPrice = parseFloat(document.getElementById('bachwasser_preis').innerText);
+
+            const bier03Count = parseInt(document.getElementById('bier_03_input').value) || 0;
+            const bier05Count = parseInt(document.getElementById('bier_05_input').value) || 0;
+            const mischeCount = parseInt(document.getElementById('mische_input').value) || 0;
+            const shotCount = parseInt(document.getElementById('shot_input').value) || 0;
+            const ciderCount = parseInt(document.getElementById('cider_input').value) || 0;
+            const bachwasserCount = parseInt(document.getElementById('bachwasser_input').value) || 0;
+
+            const totalPrice = 
+                (bier03Price * bier03Count) +
+                (bier05Price * bier05Count) +
+                (mischePrice * mischeCount) +
+                (shotPrice * shotCount) +
+                (ciderPrice * ciderCount) +
+                (bachwasserPrice * bachwasserCount);
+
+            document.getElementById('price_total').innerText = totalPrice.toFixed(2);
+        }
+
+        function invest() {
+            // Collect input values
+            const investmentData = {
+                bier_03: parseInt(document.getElementById('bier_03_input').value) || 0,
+                bier_05: parseInt(document.getElementById('bier_05_input').value) || 0,
+                mische: parseInt(document.getElementById('mische_input').value) || 0,
+                shot: parseInt(document.getElementById('shot_input').value) || 0,
+                cider: parseInt(document.getElementById('cider_input').value) || 0,
+                bachwasser: parseInt(document.getElementById('bachwasser_input').value) || 0
+            };
+
+            // Send investment data to the server (assuming there's an endpoint to handle it)
+            fetch('/process_investment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(investmentData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Investment processed:', data);
+            })
+            .catch(error => console.error('Error processing investment:', error));
+
+            // Reset input fields and total price
+            document.querySelectorAll('input[type="number"]').forEach(input => input.value = '');
+            document.getElementById('price_total').innerText = '0';
         }
     </script>
 </body>
