@@ -5,6 +5,15 @@ import financiallogic
 
 jsonPath = "./history.json"
 
+beverage_sales = {
+    "bier_03l": 0,
+    "bier_05l": 0,
+    "mische": 0,
+    "shot": 0,
+    "cider": 0,
+    "bachwasser": 0
+}
+
 def check_history_exists():
     current_directory = os.path.dirname(os.path.abspath(__file__))
     file_name = "history.json"
@@ -108,7 +117,7 @@ def get_history_data():
         data = json.load(file)
     return data
 
-def get_timestamps():
+def get_history_timestamps():
     data = get_history_data()
     history_timestamps = data['history']['time']
     return history_timestamps
@@ -122,8 +131,27 @@ def get_config():
     data = get_history_data()
     return data['config']
 
+def store_sales_numbers(sales_data):
+    if "bier_03l" in sales_data:
+        bier_03l_sales = sales_data["bier_03l"]
+    if "bier_05l" in sales_data:
+        bier_05l_sales = sales_data["bier_05l"]
+    if "mische" in sales_data:
+        mische_sales = sales_data["mische"]
+    if "shot" in sales_data:
+        shot_sales = sales_data["shot"]
+    if "cider" in sales_data:
+        cider_sales = sales_data["cider"]
+    if "bachwasser" in sales_data:
+        bachwasser_sales = sales_data["bachwasser"]
 
-
+    beverage_sales["bier_03l"] += bier_03l_sales
+    beverage_sales["bier_05l"] += bier_05l_sales
+    beverage_sales["mische"] += mische_sales
+    beverage_sales["shot"] += shot_sales
+    beverage_sales["cider"] += cider_sales
+    beverage_sales["bachwasser"] += bachwasser_sales
+    print(beverage_sales)
 
 
 def write_history_change_test():
@@ -136,10 +164,6 @@ def write_history_change_test():
 
     with open(jsonPath, 'w') as file:
         json.dump(data, file, indent=4)
-
-
-
-
 
 if __name__ == '__main__':
     write_history_change_test()

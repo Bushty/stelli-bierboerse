@@ -1,5 +1,6 @@
 import random
 
+
 def submit_purchases():
     return
 
@@ -15,3 +16,8 @@ def get_random_price():
     komma = random.randint(0, 99)
     random_float = float(f"{whole}.{komma}")
     return random_float
+
+def calculate_financials():
+
+
+    return

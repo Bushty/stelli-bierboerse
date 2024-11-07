@@ -17,7 +17,7 @@ jsonPath = "./history.json"
 @app.route('/')
 def button_page():
     # timestamps aus json laden
-    timestamps = get_timestamps()
+    timestamps = get_history_timestamps()
 
     # preise aus json laden
     beverages = get_history_prices()
@@ -106,10 +106,15 @@ def graph_page():
 #     graph_json = json.dumps(traces, cls=PlotlyJSONEncoder)
 #     return jsonify(graph_json=graph_json)
 
-@app.route('/process_input', methods=['POST'])
+@app.route('/process_investment', methods=['POST'])
 def process_input():
     print(request.get_json())
 
+    sales_data = request.get_json()  
+
+    store_sales_numbers(sales_data)
+
+    graph_page()
     return "success"
 
 if __name__ == '__main__':
