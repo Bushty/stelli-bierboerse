@@ -107,14 +107,9 @@ def graph_page():
 #     return jsonify(graph_json=graph_json)
 
 @app.route('/process_investment', methods=['POST'])
-def process_input():
+def process_investment():
     print(request.get_json())
 
-    sales_data = request.get_json()  
-
-    store_sales_numbers(sales_data)
-
-    graph_page()
     return "success"
 
 if __name__ == '__main__':
