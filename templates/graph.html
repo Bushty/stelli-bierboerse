@@ -10,76 +10,120 @@
     <link rel="stylesheet" href="./templates/sytle.css">
 
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <style>
+        div.rightAligend {
+            text-align: right;
+        }
+    </style>
 </head>
 <body>
     <div class="container card shadow p-4 mx-auto my-5">
+
         <div id="header" class="container">
             <h1>Bierbörse Stelli 2024</h1>
         </div>
+
         <div class="row alert alert-dark">
+
             <div class="col-9">
                 <div id="graph"></div>
-        
-                <script>
-                    // Initial rendering of the graph with data passed from Flask
-                    const initialGraphData = {{ graph_json | safe }};
-                    Plotly.newPlot('graph', initialGraphData);
-        
-                    // Function to fetch new data and update the graph
-                    function updateGraph() {
-                        fetch('/update_graph')
-                            .then(response => response.json())
-                            .then(data => {
-                                const graphData = JSON.parse(data.graph_json);
-                                Plotly.react('graph', graphData);
-                            })
-                            .catch(error => console.error('Error fetching graph data:', error));
-                    };
-        
-                    // Refresh the graph every 30 seconds without reloading the page
-                    setInterval(graph, 1000); // 30 seconds
-                </script>
             </div>
-            <div class="col-3 row">
+
+            <div class="col-3 row" id="price-list">
+
                 <h1>Preisliste</h1>
 
-                <div class="col-lg-6">
-                    <p id="name-list"></p>  <!-- Die Liste wird hier befüllt -->
+                <div class="card" style = "width:6rem; height:2rem;">
+                    <div class="card-body p-0">
+                        <div class="container timer-container">
+                            <!-- Timer-Anzeige -->
+                            <div class="timer-display" id="timerDisplay">Timer</div>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="col-lg-6">
-                    <p id="price-list"></p>  <!-- Die Liste wird hier befüllt -->
-                </div>
-
-
-                <script>
-                    const prices = {{ prices|tojson|safe }};  // Angenommene Übergabe der JSON-Daten aus dem Backend
-
-                    const nameList = document.getElementById("name-list");
-                    const priceList = document.getElementById("price-list");
-
-                    // Schleife durch die Getränke und Erstellen der Listeneinträge
-                    prices.forEach(beverage => {
-
-                        // Erstellen eines neuen Listenelements
-                        const nameP = document.createElement("p");
-                        const priceP = document.createElement("p");
-
-                        nameP.textContent = beverage.name;
-                        priceP.textContent = beverage.price + " €";
-
-                        console.log(priceP);
-
-                        // Füge das Listenelement zur Liste hinzu
-                        nameList.appendChild(nameP);
-                        priceList.appendChild(priceP);
-                    });
-                </script>
             </div>
-
         </div>
     </div>
     <div id="content" class="container">
     </div>
 </body>
+
+    <script>
+        const refreshTimer_s = 5;
+
+
+
+        ///////////
+        // Graph //
+        ///////////
+        const initialGraphData = {{ graph_json | safe }};
+        Plotly.newPlot('graph', initialGraphData);
+
+
+        ///////////
+        // Timer //
+        ///////////
+        let seconds = refreshTimer_s;
+
+        timer = setInterval(function() {
+            seconds--;
+            let minutes = Math.floor(seconds / 60);  // Minuten berechnen
+            let displaySeconds = seconds % 60;  // Sekunden berechnen
+
+            // Timer im Format MM:SS anzeigen
+            document.getElementById('timerDisplay').textContent =
+                `${minutes.toString().padStart(2, '0')}:${displaySeconds.toString().padStart(2, '0')}`;
+        }, 1000);
+
+
+        //////////////////
+        // Auto Refresh //
+        //////////////////
+        setInterval(function() {
+            location.reload();
+        }, refreshTimer_s * 1000);
+
+
+        ////////////////
+        // Preisliste //
+        ////////////////
+        const prices = {{ prices|tojson|safe }};  // Angenommene Übergabe der JSON-Daten aus dem Backend
+        const priceListDiv = document.getElementById("price-list");
+
+        // Schleife durch die Getränke und Erstellen der Listeneinträge
+        prices.forEach(beverage => {
+
+            // Erstelle card
+            const card = document.createElement("div");
+            const cardBody = document.createElement("div");
+            const name = document.createElement("div");
+            const price = document.createElement("div");
+
+            // Klassen zuweisen
+            card.className = "card justify-content-center";
+            cardBody.className = "card-body row p-0 justify-content-center";
+            name.className = "col";
+            price.className = "col rightAligend";
+
+            // Style setzen
+            card.style = "width:25rem; height:2rem;"
+            price.style = "float: right"
+
+            // Werte reinschreiben
+            name.textContent = beverage.name;
+            price.textContent = beverage.price + " €";
+
+            // Eineinander einhängen
+            cardBody.appendChild(name);
+            cardBody.appendChild(price);
+            card.appendChild(cardBody);
+            priceListDiv.appendChild(card);
+        });
+    </script>
+
 </html>
