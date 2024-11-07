@@ -25,8 +25,12 @@ def button_page():
 def graph_page():
     # timestamps aus json laden
     timestamps = get_timestamps()
+
     # preise aus json laden
     beverages = get_history_prices()
+
+    # config aus json laden
+    config = get_config()
 
     lines = []
     for beverage in beverages:
@@ -51,10 +55,10 @@ def graph_page():
         for beverage in beverages
     ]
 
-    # print(latestPrices)
+
 
     # Pass the graph data to the template
-    return render_template('graph.html', graph_json=graph_json, prices=latestPrices)
+    return render_template('graph.html', graph_json=graph_json, prices=latestPrices, config=config)
 
 
 # @app.route('/update_graph', methods=['GET'])

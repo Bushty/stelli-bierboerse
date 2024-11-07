@@ -117,6 +117,11 @@ def get_history_prices():
     history_prices = data['history']['beverages']
     return history_prices
 
+def get_config():
+    data = get_history_data()
+    return data['config']
+
+
 def write_history_change():
     check_history_exists()
     current_time = time.strftime("%H:%M", time.localtime())
@@ -128,6 +133,7 @@ def write_history_change():
 
     with open(jsonPath, 'w') as file:
         json.dump(data, file, indent=4)
+
 
 
 
