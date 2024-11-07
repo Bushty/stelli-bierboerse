@@ -1,6 +1,6 @@
 {
     "config": {
-        "intervall_s": 300.0,
+        "intervall_s": 1.0,
         "show_history_h": 2,
         "factor_price_increase": 1.10,
         "factor_price_decrease": 0.90,

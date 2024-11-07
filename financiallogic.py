@@ -133,12 +133,13 @@ def get_config():
 #     return test_prices
 
 def sales_numbers_test():
-    bier03l_random = random.randint(1, 10)
-    bier05l_random = random.randint(1, 10)
-    mische_random = random.randint(1, 10)
-    shot_random = random.randint(1, 10)
-    cider_random = random.randint(1, 10)
-    bachwasser_random = random.randint(1, 10)
+    random_max = 100
+    bier03l_random = random.randint(1, random_max)
+    bier05l_random = random.randint(1, random_max)
+    mische_random = random.randint(1, random_max)
+    shot_random = random.randint(1, random_max)
+    cider_random = random.randint(1, random_max)
+    bachwasser_random = random.randint(1, random_max)
     test_numbers = {
         "bier03l": bier03l_random,
         "bier05l": bier05l_random,
@@ -188,22 +189,71 @@ def calculate_financials(sales_numbers, history_config):
 
     range = highest - lowest
     average = range / 2
+    range_weight = range / 10
 
+    print(f"range: {range}")
+    print(f"average: {average}")
+    print(f"range_weight: {range_weight}")
+    print(f"power: {pow(1, range_weight)}")
 
     # update prices
     for beverage in sales_numbers:
         if float(sales_numbers[beverage]) > average:
-            new_price = float(old_prices[beverage]) * factor_price_increase
+            new_price = float(old_prices[beverage]) * (pow(factor_price_increase, range_weight))
             new_price_shortened = round(new_price, 2)
             old_prices[beverage] = new_price_shortened
         if float(sales_numbers[beverage]) < average:
-            new_price = float(old_prices[beverage]) * factor_price_decrease
+            new_price = float(old_prices[beverage]) * (pow(factor_price_decrease, range_weight))
             new_price_shortened = round(new_price, 2)
             old_prices[beverage] = new_price_shortened
 
     # get min & max prices from history_config
-
+    config_beverages = history_config["config"]["beverages"]
     # ensure min & max prices are kept
+    for beverage in config_beverages:
+        if beverage["name"] == "Bier 0.3l":
+            beverage_max = beverage["price_max"]
+            beverage_min = beverage["price_min"]
+            if old_prices["bier03l"] > beverage_max:
+                old_prices["bier03l"] = beverage_max
+            if old_prices["bier03l"] < beverage_min:
+                old_prices["bier03l"] = beverage_min
+        if beverage["name"] == "Bier 0.5l":
+            beverage_max = beverage["price_max"]
+            beverage_min = beverage["price_min"]
+            if old_prices["bier05l"] > beverage_max:
+                old_prices["bier05l"] = beverage_max
+            if old_prices["bier05l"] < beverage_min:
+                old_prices["bier05l"] = beverage_min
+        if beverage["name"] == "Cider":
+            beverage_max = beverage["price_max"]
+            beverage_min = beverage["price_min"]
+            if old_prices["cider"] > beverage_max:
+                old_prices["cider"] = beverage_max
+            if old_prices["cider"] < beverage_min:
+                old_prices["cider"] = beverage_min
+        if beverage["name"] == "Mische":
+            beverage_max = beverage["price_max"]
+            beverage_min = beverage["price_min"]
+            if old_prices["mische"] > beverage_max:
+                old_prices["mische"] = beverage_max
+            if old_prices["mische"] < beverage_min:
+                old_prices["mische"] = beverage_min
+        if beverage["name"] == "Bachwasser":
+            beverage_max = beverage["price_max"]
+            beverage_min = beverage["price_min"]
+            if old_prices["bachwasser"] > beverage_max:
+                old_prices["bachwasser"] = beverage_max
+            if old_prices["bachwasser"] < beverage_min:
+                old_prices["bachwasser"] = beverage_min
+        if beverage["name"] == "Shot":
+            beverage_max = beverage["price_max"]
+            beverage_min = beverage["price_min"]
+            if old_prices["shot"] > beverage_max:
+                old_prices["shot"] = beverage_max
+            if old_prices["shot"] < beverage_min:
+                old_prices["shot"] = beverage_min
+            
 
     # return new prices
 
