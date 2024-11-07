@@ -8,9 +8,6 @@ from financiallogic import *
 
 app = Flask(__name__)
 
-PREIS_ANSTIEG_FAKTOR = 1.05
-PREIS_ABSTIEG_FAKTOR = 0.95
-
 jsonPath = "./history.json"
 
 # Generate random data for the graph
@@ -24,6 +21,7 @@ def button_page():
 
 @app.route('/graph')
 def graph_page():
+    check_history_exists()
     # load json from file
     with open(jsonPath, 'r') as file:
         data = json.load(file)

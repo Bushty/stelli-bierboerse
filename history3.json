@@ -44,43 +44,57 @@
     },
     "history": {
         "time": [
-            0
+                0,
+                1,
+                2
         ],
         "beverages": [
             {
                 "name": "Bier 0.3L",
                 "prices": [
-                    1.5
+                    1.5,
+                    2.4,
+                    2.8
                 ]
             },
             {
                 "name": "Bier 0.5L",
                 "prices": [
-                    2.0
+                    2.0,
+                    1.4,
+                    1.2
                 ]
             },
             {
                 "name": "Cider",
                 "prices": [
-                    2.0
+                    2.0,
+                    2.6,
+                    2.7
                 ]
             },
             {
                 "name": "Mische",
                 "prices": [
-                    3.0
+                    3.0,
+                    3.5,
+                    4.0
                 ]
             },
             {
                 "name": "Bachwasser",
                 "prices": [
-                    2.0
+                    2.0,
+                    1.8,
+                    1.6
                 ]
             },
             {
                 "name": "Shot",
                 "prices": [
-                    1.0
+                    1.0,
+                    0.8,
+                    0.6
                 ]
             }
         ]
