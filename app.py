@@ -11,28 +11,18 @@ app = Flask(__name__)
 jsonPath = "./history.json"
 
 # Generate random data for the graph
-def generate_data():
-    return [random.randint(1, 10) for _ in range(6)]
+# def generate_data():
+#     return [random.randint(1, 10) for _ in range(6)]
 
 @app.route('/')
 def button_page():
-    check_history_exists()
-
-    with open(jsonPath, 'r') as file:
-        data = json.load(file)
-
-    beverages = data['history']['beverages']
+    beverages = get_history_prices()
 
     # Render the page with six buttons
     return render_template('buttons.html', beverages=beverages)
 
 @app.route('/graph')
 def graph_page():
-    check_history_exists()
-    # load json from file
-    with open(jsonPath, 'r') as file:
-        data = json.load(file)
-
     # timestamps aus json laden
     timestamps = get_timestamps()
     # preise aus json laden
@@ -67,26 +57,26 @@ def graph_page():
     return render_template('graph.html', graph_json=graph_json, prices=latestPrices)
 
 
-@app.route('/update_graph', methods=['GET'])
-def update_graph():
-    # Generate new data for 6 lines
-    traces = []
-    for i in range(6):
-        variables = generate_data()  # Each line gets its own random set of data
+# @app.route('/update_graph', methods=['GET'])
+# def update_graph():
+#     # Generate new data for 6 lines
+#     traces = []
+#     for i in range(6):
+#         variables = generate_data()  # Each line gets its own random set of data
         
-        # Create a line chart using Plotly
-        line = go.Scatter(
-            x=list(range(len(variables))),
-            y=variables,
-            mode='lines+markers',
-            name=f'Line {i+1}',  # Give each line a name for better visualization
-            line=dict(width=2),
-            marker=dict(size=4)
-        )
-        traces.append(line)
+#         # Create a line chart using Plotly
+#         line = go.Scatter(
+#             x=list(range(len(variables))),
+#             y=variables,
+#             mode='lines+markers',
+#             name=f'Line {i+1}',  # Give each line a name for better visualization
+#             line=dict(width=2),
+#             marker=dict(size=4)
+#         )
+#         traces.append(line)
 
-    graph_json = json.dumps(traces, cls=PlotlyJSONEncoder)
-    return jsonify(graph_json=graph_json)
+#     graph_json = json.dumps(traces, cls=PlotlyJSONEncoder)
+#     return jsonify(graph_json=graph_json)
 
 @app.route('/process_input', methods=['POST'])
 def process_input():
