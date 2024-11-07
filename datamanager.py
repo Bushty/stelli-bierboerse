@@ -6,8 +6,8 @@ import financiallogic
 jsonPath = "./history.json"
 
 beverage_sales = {
-    "bier_03l": 0,
-    "bier_05l": 0,
+    "bier03l": 0,
+    "bier05l": 0,
     "mische": 0,
     "shot": 0,
     "cider": 0,
@@ -132,10 +132,10 @@ def get_config():
     return data['config']
 
 def store_sales_numbers(sales_data):
-    if "bier_03l" in sales_data:
-        bier_03l_sales = sales_data["bier_03l"]
-    if "bier_05l" in sales_data:
-        bier_05l_sales = sales_data["bier_05l"]
+    if "bier03l" in sales_data:
+        bier_03l_sales = sales_data["bier03l"]
+    if "bier05l" in sales_data:
+        bier_05l_sales = sales_data["bier05l"]
     if "mische" in sales_data:
         mische_sales = sales_data["mische"]
     if "shot" in sales_data:
@@ -145,8 +145,8 @@ def store_sales_numbers(sales_data):
     if "bachwasser" in sales_data:
         bachwasser_sales = sales_data["bachwasser"]
 
-    beverage_sales["bier_03l"] += bier_03l_sales
-    beverage_sales["bier_05l"] += bier_05l_sales
+    beverage_sales["bier03l"] += bier_03l_sales
+    beverage_sales["bier05l"] += bier_05l_sales
     beverage_sales["mische"] += mische_sales
     beverage_sales["shot"] += shot_sales
     beverage_sales["cider"] += cider_sales

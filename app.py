@@ -83,7 +83,7 @@ def graph_page():
 
 @app.route('/process_investment', methods=['POST'])
 def process_investment():
-    print(request.get_json())
+    store_sales_numbers(request.get_json())
 
     return "success"
 
