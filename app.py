@@ -51,7 +51,7 @@ def graph_page():
         for beverage in beverages
     ]
 
-    print(latestPrices)
+    # print(latestPrices)
 
     # Pass the graph data to the template
     return render_template('graph.html', graph_json=graph_json, prices=latestPrices)

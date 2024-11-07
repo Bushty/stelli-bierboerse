@@ -101,27 +101,36 @@ def check_history_exists():
         with open(file_path, 'w') as file:
             json.dump(data, file, indent=4)
 
-def load_history_data():
+def get_history_data():
     check_history_exists()
     with open(jsonPath, 'r') as file:
         data = json.load(file)
     return data
 
 def get_timestamps():
-    data = load_history_data()
+    data = get_history_data()
     history_timestamps = data['history']['time']
     return history_timestamps
 
 def get_history_prices():
-    data = load_history_data()
+    data = get_history_data()
     history_prices = data['history']['beverages']
     return history_prices
 
 def write_history_change():
-    timestamp = time.localtime()
+    check_history_exists()
+    current_time = time.strftime("%H:%M", time.localtime())
+    data = get_history_data()
+    data["history"]["time"].append(current_time)
+    test_price = 0.93
+    for beverage in data["history"]["beverages"]:
+        beverage["prices"].append(test_price)
+
+    with open(jsonPath, 'w') as file:
+        json.dump(data, file, indent=4)
 
 
 
 
 if __name__ == '__main__':
-    check_history_exists()
+    write_history_change()
