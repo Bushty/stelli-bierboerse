@@ -23,8 +23,8 @@ def calculate_financials(sales_numbers):
     print(f"beverages sales {sales_numbers}")
 
     prices_new = {
-        "bier_03l": 0.00,
-        "bier_05l": 0.00,
+        "bier03l": 0.00,
+        "bier05l": 0.00,
         "mische": 0.00,
         "shot": 0.00,
         "cider": 0.00,
