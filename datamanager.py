@@ -47,43 +47,54 @@ def check_history_exists():
                         "default_price": 1.0,
                         "price_min": 0.5,
                         "price_max": 10.0
-                    },
-
-
+                    }
                 ]
             },
-            "history": [
-                {
-                    "time": 0,
-                    "prices": [
-                        {
-                            "name": "Bier 0.3L",
-                            "price": 1.5
-                        },
-                        {
-                            "name": "Bier 0.5L",
-                            "price": 2.0
-                        },
-                        {
-                            "name": "Cider",
-                            "price": 2.0
-                        },
-                        {
-                            "name": "Mische",
-                            "price": 3.0
-                        },
-                        {
-                            "name": "Bachwasser",
-                            "price": 2.0
-                        },
-                        {
-                            "name": "Shot",
-                            "price": 1.0
-                        }
-                    ]
-                }
-            ]
+            "history": {
+                "time": [
+                        0
+                ],
+                "beverages": [
+                    {
+                        "name": "Bier 0.3L",
+                        "prices": [
+                            1.5
+                        ]
+                    },
+                    {
+                        "name": "Bier 0.5L",
+                        "prices": [
+                            2.0
+                        ]
+                    },
+                    {
+                        "name": "Cider",
+                        "prices": [
+                            2.0
+                        ]
+                    },
+                    {
+                        "name": "Mische",
+                        "prices": [
+                            3.0
+                        ]
+                    },
+                    {
+                        "name": "Bachwasser",
+                        "prices": [
+                            2.0
+                        ]
+                    },
+                    {
+                        "name": "Shot",
+                        "prices": [
+                            1.0
+                        ]
+                    }
+                ]
+            }
         }
+
         with open(file_path, 'w') as file:
             json.dump(data, file, indent=4)
 
