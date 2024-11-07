@@ -16,8 +16,15 @@ def generate_data():
 
 @app.route('/')
 def button_page():
+    check_history_exists()
+
+    with open(jsonPath, 'r') as file:
+        data = json.load(file)
+
+    beverages = data['history']['beverages']
+
     # Render the page with six buttons
-    return render_template('buttons.html')
+    return render_template('buttons.html', beverages=beverages)
 
 @app.route('/graph')
 def graph_page():
@@ -27,9 +34,9 @@ def graph_page():
         data = json.load(file)
 
     # timestamps aus json laden
-    timestamps = data['history']['time']
+    timestamps = get_timestamps()
     # preise aus json laden
-    beverages = data['history']['beverages']
+    beverages = get_history_prices()
 
     lines = []
     for beverage in beverages:

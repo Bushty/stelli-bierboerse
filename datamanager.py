@@ -1,5 +1,8 @@
 import os
 import json
+import time
+
+jsonPath = "./history.json"
 
 def check_history_exists():
     current_directory = os.path.dirname(os.path.abspath(__file__))
@@ -98,8 +101,24 @@ def check_history_exists():
         with open(file_path, 'w') as file:
             json.dump(data, file, indent=4)
 
+def load_history_data():
+    check_history_exists()
+    with open(jsonPath, 'r') as file:
+        data = json.load(file)
+    return data
 
+def get_timestamps():
+    data = load_history_data()
+    history_timestamps = data['history']['time']
+    return history_timestamps
 
+def get_history_prices():
+    data = load_history_data()
+    history_prices = data['history']['beverages']
+    return history_prices
+
+def write_history_change():
+    timestamp = time.localtime()
 
 
 
