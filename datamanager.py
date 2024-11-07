@@ -166,7 +166,7 @@ def write_history_change_test():
         json.dump(data, file, indent=4)
 
 def test2():
-    print(calculate_financials())
+    print(calculate_financials(beverage_sales))
 
 if __name__ == '__main__':
     test2()

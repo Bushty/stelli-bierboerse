@@ -18,7 +18,9 @@ def get_random_price():
     random_float = float(f"{whole}.{komma}")
     return random_float
 
-def calculate_financials():
+def calculate_financials(sales_numbers):
+
+    print(f"beverages sales {sales_numbers}")
 
     prices_new = {
         "bier_03l": 0.00,
