@@ -1,7 +1,7 @@
 import os
 import json
 import time
-import financiallogic
+from financiallogic import calculate_financials
 
 jsonPath = "./history.json"
 
@@ -165,5 +165,8 @@ def write_history_change_test():
     with open(jsonPath, 'w') as file:
         json.dump(data, file, indent=4)
 
+def test2():
+    print(calculate_financials())
+
 if __name__ == '__main__':
-    write_history_change_test()
+    test2()

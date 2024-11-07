@@ -1,6 +1,7 @@
 import random
 
 
+
 def submit_purchases():
     return
 
@@ -19,5 +20,13 @@ def get_random_price():
 
 def calculate_financials():
 
+    prices_new = {
+        "bier_03l": 0.00,
+        "bier_05l": 0.00,
+        "mische": 0.00,
+        "shot": 0.00,
+        "cider": 0.00,
+        "bachwasser": 0.00
+    }
 
-    return
+    return prices_new
