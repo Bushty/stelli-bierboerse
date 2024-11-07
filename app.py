@@ -51,10 +51,12 @@ def graph_page():
     latestPrices = [
         {
             "name": beverage["name"],
-            "price": max(beverage["prices"])  # Höchster Preis ist der neueste
+            "price": beverage["prices"][-1]
         }
         for beverage in beverages
     ]
+
+    print(latestPrices)
 
     # Pass the graph data to the template
     return render_template('graph.html', graph_json=graph_json, prices=latestPrices)
