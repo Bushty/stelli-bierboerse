@@ -131,36 +131,44 @@ def get_config():
     data = get_history_data()
     return data['config']
 
-def store_sales_numbers(sales_data):
-    if "bier03l" in sales_data:
-        bier_03l_sales = sales_data["bier03l"]
-    if "bier05l" in sales_data:
-        bier_05l_sales = sales_data["bier05l"]
-    if "mische" in sales_data:
-        mische_sales = sales_data["mische"]
-    if "shot" in sales_data:
-        shot_sales = sales_data["shot"]
-    if "cider" in sales_data:
-        cider_sales = sales_data["cider"]
-    if "bachwasser" in sales_data:
-        bachwasser_sales = sales_data["bachwasser"]
+def get_current_prices():
+    # preise aus json laden
+    beverages = get_history_prices()
 
-    beverage_sales["bier03l"] += bier_03l_sales
-    beverage_sales["bier05l"] += bier_05l_sales
-    beverage_sales["mische"] += mische_sales
-    beverage_sales["shot"] += shot_sales
-    beverage_sales["cider"] += cider_sales
-    beverage_sales["bachwasser"] += bachwasser_sales
-    print(beverage_sales)
+    # aktuelle Preise zusammenfassen
+    latestPrices = [
+        {
+            "name": beverage["name"],
+            "price": beverage["prices"][-1]
+        }
+        for beverage in beverages
+    ]
+    return latestPrices
 
+def handle_sales(sales_numbers):
+    # aktuelle preise holen
+    current_prices = get_current_prices()
 
-def write_history_change_test():
+    # neue Preise berechnen lassen
+    new_prices = calculate_financials(sales_numbers)
+
+    write_history_change(new_prices)
+
+def write_history_change(new_prices):
     check_history_exists()
+
+    # neuen timestamp setzen
     current_time = time.strftime("%H:%M", time.localtime())
     data = get_history_data()
     data["history"]["time"].append(current_time)
-    for beverage in data["history"]["beverages"]:
-        beverage["prices"].append(financiallogic.get_random_price())
+
+    # neue Preise in json einfügen
+    data["history"]["beverages"][0]["prices"].append(new_prices["bier03l"])
+    data["history"]["beverages"][1]["prices"].append(new_prices["bier05l"])
+    data["history"]["beverages"][2]["prices"].append(new_prices["mische"])
+    data["history"]["beverages"][3]["prices"].append(new_prices["shot"])
+    data["history"]["beverages"][4]["prices"].append(new_prices["cider"])
+    data["history"]["beverages"][5]["prices"].append(new_prices["bachwasser"])
 
     with open(jsonPath, 'w') as file:
         json.dump(data, file, indent=4)

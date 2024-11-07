@@ -35,15 +35,7 @@ def button_page():
 
     graph_json = json.dumps(lines, cls=PlotlyJSONEncoder)
 
-    # aktuelle Preise zusammenfassen
-    latestPrices = [
-        {
-            "name": beverage["name"],
-            "price": beverage["prices"][-1]
-        }
-        for beverage in beverages
-    ]
-    return render_template('buttons.html', graph_json=graph_json, prices=latestPrices, config=config)
+    return render_template('buttons.html', graph_json=graph_json, prices=get_current_prices(), config=config)
 
 @app.route('/graph')
 def graph_page():    
@@ -70,20 +62,12 @@ def graph_page():
 
     graph_json = json.dumps(lines, cls=PlotlyJSONEncoder)
 
-    # aktuelle Preise zusammenfassen
-    latestPrices = [
-        {
-            "name": beverage["name"],
-            "price": beverage["prices"][-1]
-        }
-        for beverage in beverages
-    ]
     
-    return render_template('graph.html', graph_json=graph_json, prices=latestPrices, config=config)
+    return render_template('graph.html', graph_json=graph_json, prices=get_current_prices(), config=config)
 
 @app.route('/process_investment', methods=['POST'])
 def process_investment():
-    store_sales_numbers(request.get_json())
+    handle_sales(request.get_json())
 
     return "success"
 
