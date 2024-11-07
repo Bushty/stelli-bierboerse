@@ -1,0 +1,26 @@
+#price-list {
+list-style-type: none;  /* Entfernt die Standardaufzählungszeichen */
+padding: 0;  /* Entfernt Padding */
+}
+
+.price-item {
+    display: flex;  /* Flexbox aktivieren */
+    justify-content: space-between;  /* Verteilt den Raum zwischen den Elementen */
+    margin-bottom: 10px;  /* Abstand zwischen den Listenelementen */
+    font-size: 18px;  /* Setzt die Schriftgröße */
+}
+
+.name {
+    flex-grow: 1;  /* Der Name nimmt den verbleibenden Raum ein */
+    text-align: left;  /* Text linksbündig */
+}
+
+.price-container {
+    display: flex;  /* Container für den Preis, damit wir ihn rechtsbündig ausrichten können */
+    justify-content: flex-end;  /* Der Preis wird am rechten Rand des Containers ausgerichtet */
+    min-width: 80px;  /* Mindestbreite für den Preisbereich */
+}
+
+.price {
+    text-align: right;  /* Preis rechtsbündig */
+}

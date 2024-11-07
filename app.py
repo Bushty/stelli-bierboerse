@@ -9,6 +9,8 @@ app = Flask(__name__)
 PREIS_ANSTIEG_FAKTOR = 1.05
 PREIS_ABSTIEG_FAKTOR = 0.95
 
+jsonPath = "./history.json"
+
 # Generate random data for the graph
 def generate_data():
     return [random.randint(1, 10) for _ in range(6)]
@@ -20,20 +22,41 @@ def button_page():
 
 @app.route('/graph')
 def graph_page():
-    # Generate new data for the graph
-    variables = generate_data()
-    # Create a bar chart using Plotly
-    line = go.Scatter(
-        x=list(range(len(variables))),  # X-axis as a sequence of numbers
-        y=variables,
-        mode='lines+markers',           # Display both lines and markers
-        line=dict(color='blue', width=2), # Set line color to blue and line width
-        marker=dict(size=4)             # Set marker size for points on the line
-    )
+    # load json from file
+    with open(jsonPath, 'r') as file:
+        data = json.load(file)
 
-    graph_json = json.dumps([line], cls=PlotlyJSONEncoder)
+    # timestamps aus json laden
+    timestamps = data['history']['time']
+    # preise aus json laden
+    beverages = data['history']['beverages']
+
+    lines = []
+    for beverage in beverages:
+        line = go.Scatter(
+            x = timestamps,                     # X-axis as a sequence of numbers
+            y = beverage['prices'],
+            mode = 'lines+markers',             # Display both lines and markers
+            line = dict(width=2), # Set line color to blue and line width
+            marker = dict(size=4),              # Set marker size for points on the line
+            name = beverage['name']
+        )
+        lines += [line]
+
+    graph_json = json.dumps(lines, cls=PlotlyJSONEncoder)
+
+    # aktuelle Preise zusammenfassen
+    latestPrices = [
+        {
+            "name": beverage["name"],
+            "price": max(beverage["prices"])  # Höchster Preis ist der neueste
+        }
+        for beverage in beverages
+    ]
+
     # Pass the graph data to the template
-    return render_template('graph.html', graph_json=graph_json)
+    return render_template('graph.html', graph_json=graph_json, prices=latestPrices)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
