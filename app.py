@@ -16,13 +16,6 @@ jsonPath = "./history.json"
 
 @app.route('/')
 def button_page():
-    beverages = get_history_prices()
-
-    # Render the page with six buttons
-    return render_template('buttons.html', beverages=beverages)
-
-@app.route('/graph')
-def graph_page():
     # timestamps aus json laden
     timestamps = get_timestamps()
 
@@ -54,12 +47,43 @@ def graph_page():
         }
         for beverage in beverages
     ]
+    return render_template('buttons.html', graph_json=graph_json, prices=latestPrices, config=config)
 
+@app.route('/graph')
+def graph_page():    
+    # timestamps aus json laden
+    timestamps = get_timestamps()
 
+    # preise aus json laden
+    beverages = get_history_prices()
 
-    # Pass the graph data to the template
+    # config aus json laden
+    config = get_config()
+
+    lines = []
+    for beverage in beverages:
+        line = go.Scatter(
+            x = timestamps,                     # X-axis as a sequence of numbers
+            y = beverage['prices'],
+            mode = 'lines+markers',             # Display both lines and markers
+            line = dict(width=2), # Set line color to blue and line width
+            marker = dict(size=4),              # Set marker size for points on the line
+            name = beverage['name']
+        )
+        lines += [line]
+
+    graph_json = json.dumps(lines, cls=PlotlyJSONEncoder)
+
+    # aktuelle Preise zusammenfassen
+    latestPrices = [
+        {
+            "name": beverage["name"],
+            "price": beverage["prices"][-1]
+        }
+        for beverage in beverages
+    ]
+    
     return render_template('graph.html', graph_json=graph_json, prices=latestPrices, config=config)
-
 
 # @app.route('/update_graph', methods=['GET'])
 # def update_graph():
@@ -84,11 +108,9 @@ def graph_page():
 
 @app.route('/process_input', methods=['POST'])
 def process_input():
-    # Handle input from the button page
-    user_input = request.form.get('user_input')  # Assuming there is an input field in buttons.html
-    # You can use the input to call functions from financiallogic or datamanager
-    result = process_user_input(user_input)  # Replace with your actual processing logic
-    return jsonify(result=result)
+    print(request)
+
+    return "success"
 
 if __name__ == '__main__':
     app.run(debug=True)

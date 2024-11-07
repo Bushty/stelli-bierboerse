@@ -44,7 +44,6 @@
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
@@ -65,12 +64,10 @@
         const initialGraphData = {{ graph_json|safe }};
         Plotly.newPlot('graph', initialGraphData);
 
-
         ///////////
         // Timer //
         ///////////
         let seconds = refreshTimer_s;
-
         timer = setInterval(function() {
             seconds--;
             let minutes = Math.floor(seconds / 60);  // Minuten berechnen
@@ -81,7 +78,6 @@
                 `${minutes.toString().padStart(2, '0')}:${displaySeconds.toString().padStart(2, '0')}`;
         }, 1000);
 
-
         //////////////////
         // Auto Refresh //
         //////////////////
@@ -89,11 +85,10 @@
             location.reload();
         }, refreshTimer_s * 1000);
 
-
         ////////////////
         // Preisliste //
         ////////////////
-        const prices = {{ prices|tojson|safe }};  // Angenommene Übergabe der JSON-Daten aus dem Backend
+        const prices = {{ prices|tojson|safe }};  
         const priceListDiv = document.getElementById("price-list");
 
         // Schleife durch die Getränke und Erstellen der Listeneinträge
