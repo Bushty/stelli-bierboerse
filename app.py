@@ -52,7 +52,7 @@ def button_page():
 @app.route('/graph')
 def graph_page():    
     # timestamps aus json laden
-    timestamps = get_timestamps()
+    timestamps = get_history_timestamps()
 
     # preise aus json laden
     beverages = get_history_prices()
