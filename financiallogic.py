@@ -2,7 +2,7 @@ import random
 import os
 import json
 
-##### TODO: REMOVE SOMEHOW DUPLICATES FROM DATAMANAGER #####
+##### TODO: REMOVE SOMEHOW DUPLICATION FROM DATAMANAGER #####
 jsonPath = "./history.json"
 
 def check_history_exists():
@@ -147,12 +147,13 @@ def sales_numbers_test():
         "cider": cider_random,
         "bachwasser": bachwasser_random
     }
+    print(f"Test sales_numbers: {test_numbers}")
     return test_numbers
 
 def calculate_financials(sales_numbers, history_config):
     config_data = history_config["config"]
-    factor_price_increase = config_data["factor_price_increase"].value
-    factor_price_decrease = config_data["factor_price_decrease"].value
+    factor_price_increase = config_data["factor_price_increase"]
+    factor_price_decrease = config_data["factor_price_decrease"]
 
     # get old prices from history_config
     old_prices = {
@@ -167,17 +168,17 @@ def calculate_financials(sales_numbers, history_config):
     
     for beverage in history_beverages:
         if beverage["name"] == "Bier 0.3L":
-            old_prices["bier03l"].value = beverage["prices"][-1]
+            old_prices["bier03l"] = beverage["prices"][-1]
         if beverage["name"] == "Bier 0.5L":
-            old_prices["bier05l"].value = beverage["prices"][-1]
+            old_prices["bier05l"] = beverage["prices"][-1]
         if beverage["name"] == "Mische":
-            old_prices["mische"].value = beverage["prices"][-1]
+            old_prices["mische"] = beverage["prices"][-1]
         if beverage["name"] == "Shot":
-            old_prices["shot"].value = beverage["prices"][-1]
+            old_prices["shot"] = beverage["prices"][-1]
         if beverage["name"] == "Cider":
-            old_prices["cider"].value = beverage["prices"][-1]
+            old_prices["cider"] = beverage["prices"][-1]
         if beverage["name"] == "Bachwasser":
-            old_prices["bachwasser"].value = beverage["prices"][-1]
+            old_prices["bachwasser"] = beverage["prices"][-1]
 
     
 
@@ -191,10 +192,14 @@ def calculate_financials(sales_numbers, history_config):
 
     # update prices
     for beverage in sales_numbers:
-        if beverage.value > average:
-            old_prices[beverage].value = old_prices[beverage].value * factor_price_increase
-        if beverage.value < average:
-            old_prices[beverage].value = old_prices[beverage].value * factor_price_decrease
+        if float(sales_numbers[beverage]) > average:
+            new_price = float(old_prices[beverage]) * factor_price_increase
+            new_price_shortened = round(new_price, 2)
+            old_prices[beverage] = new_price_shortened
+        if float(sales_numbers[beverage]) < average:
+            new_price = float(old_prices[beverage]) * factor_price_decrease
+            new_price_shortened = round(new_price, 2)
+            old_prices[beverage] = new_price_shortened
 
     # get min & max prices from history_config
 
@@ -204,9 +209,9 @@ def calculate_financials(sales_numbers, history_config):
 
     return old_prices
 
-# def test():
-#     print(calculate_financials(sales_numbers_test(), old_prices_test()))
-#     return
+def test():
+    print(calculate_financials(sales_numbers_test(), get_history_data()))
+    return
 
-# if __name__ == '__main__':
-#     test()
+if __name__ == '__main__':
+    test()
