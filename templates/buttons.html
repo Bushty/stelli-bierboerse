@@ -10,15 +10,15 @@
     <div class="container card shadow p-4 mx-auto my-5">
         <h1 class="mb-3 text-center">Bier Broker</h1>
 
+            <!--
                 <div class="card my-2" style = "width:6rem; height:2rem;">
                     <div class="card-body p-0">
                         <div class="container timer-container">
-                            <!-- Timer-Anzeige -->
                             <div class="timer-display" id="timerDisplay">Timer</div>
                         </div>
                     </div>
                 </div>
-
+            -->
 
         <div id="buttons" class="mb-3">
             <div class="row">
@@ -141,47 +141,52 @@
         // Config //
         ////////////
         const config = {{ config|tojson|safe }}
-        const refreshTimer_s = 5; //config.intervall_s;
+        const refreshTimer_s = config.intervall_s;
 
         ///////////
         // Timer //
         ///////////
-        let seconds = refreshTimer_s;
-        timer = setInterval(function() {
-            seconds--;
-            let minutes = Math.floor(seconds / 60);  // Minuten berechnen
-            let displaySeconds = seconds % 60;  // Sekunden berechnen
-            // Timer im Format MM:SS anzeigen
-            document.getElementById('timerDisplay').textContent =
-                `${minutes.toString().padStart(2, '0')}:${displaySeconds.toString().padStart(2, '0')}`;
-        }, 1000);
+        // let seconds = refreshTimer_s;
+        // timer = setInterval(function() {
+        //     seconds--;
+        //     let minutes = Math.floor(seconds / 60);  // Minuten berechnen
+        //     let displaySeconds = seconds % 60;  // Sekunden berechnen
+        //     // Timer im Format MM:SS anzeigen
+        //     document.getElementById('timerDisplay').textContent =
+        //         `${minutes.toString().padStart(2, '0')}:${displaySeconds.toString().padStart(2, '0')}`;
+        // }, 1000);
 
 
-        //////////////////
-        // Auto Refresh //
-        //////////////////
+        ////////////////////
+        // Fetch new Data //
+        ////////////////////
+        var prices = {{ prices|tojson|safe }}
+        var bier03_price, bier05_price, mische_price, shot_price, cider_price, bachwasser_price;
+
+        function fetchNewData() {
+            fetch('http://127.0.0.1:5000/getNewPrices')
+            .then(response => response.json())
+            .then(data => prices = data)
+            .catch(error => console.error('Error:', error));
+
+            bier03_price = prices[0].price;
+            bier05_price = prices[1].price;
+            mische_price = prices[2].price;
+            shot_price = prices[3].price;
+            cider_price = prices[4].price;
+            bachwasser_price = prices[5].price;
+
+            document.getElementById('bier03_price').innerText = bier03_price;
+            document.getElementById('bier05_price').innerText = bier05_price;
+            document.getElementById('mische_price').innerText = mische_price;
+            document.getElementById('shot_price').innerText = shot_price;
+            document.getElementById('cider_preis').innerText = cider_price;
+            document.getElementById('bachwasser_preis').innerText = bachwasser_price;
+        }
         setInterval(function() {
-            location.reload();
+            fetchNewData()
         }, refreshTimer_s * 1000);
-
-        ////////////////
-        // Preisliste //
-        ////////////////
-        const prices = {{ prices|tojson|safe }}; 
-
-        const bier03_price = prices[0].price;
-        const bier05_price = prices[1].price;
-        const mische_price = prices[2].price;
-        const shot_price = prices[3].price;
-        const cider_price = prices[4].price;
-        const bachwasser_price = prices[5].price;
-
-        document.getElementById('bier03_price').innerText = bier03_price;
-        document.getElementById('bier05_price').innerText = bier05_price;
-        document.getElementById('mische_price').innerText = mische_price;
-        document.getElementById('shot_price').innerText = shot_price;
-        document.getElementById('cider_preis').innerText = cider_price;
-        document.getElementById('bachwasser_preis').innerText = bachwasser_price;
+        fetchNewData();
     
         function calculateTotalPrice() {
             const bier03Count = parseInt(document.getElementById('bier03_anzahl').value)         || 0;

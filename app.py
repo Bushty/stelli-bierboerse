@@ -12,30 +12,15 @@ jsonPath = "./history.json"
 
 @app.route('/')
 def button_page():
-    # timestamps aus json laden
-    timestamps = get_history_timestamps()
+    return render_template('buttons.html', prices=get_current_prices(), config=get_config())
 
-    # preise aus json laden
-    beverages = get_history_prices()
+@app.route('/getNewPrices')
+def getNewPrices():
+    return get_current_prices();
 
-    # config aus json laden
-    config = get_config()
-
-    lines = []
-    for beverage in beverages:
-        line = go.Scatter(
-            x = timestamps,                     # X-axis as a sequence of numbers
-            y = beverage['prices'],
-            mode = 'lines+markers',             # Display both lines and markers
-            line = dict(width=2), # Set line color to blue and line width
-            marker = dict(size=4),              # Set marker size for points on the line
-            name = beverage['name']
-        )
-        lines += [line]
-
-    graph_json = json.dumps(lines, cls=PlotlyJSONEncoder)
-
-    return render_template('buttons.html', graph_json=graph_json, prices=get_current_prices(), config=config)
+@app.route('/getNewData')
+def getNewData():
+    return [get_history_prices(), get_history_timestamps()];
 
 @app.route('/graph')
 def graph_page():    

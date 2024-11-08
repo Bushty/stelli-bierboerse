@@ -59,12 +59,6 @@
         const refreshTimer_s = config.intervall_s;
 
         ///////////
-        // Graph //
-        ///////////
-        const initialGraphData = {{ graph_json|safe }};
-        Plotly.newPlot('graph', initialGraphData);
-
-        ///////////
         // Timer //
         ///////////
         let seconds = refreshTimer_s;
@@ -72,6 +66,10 @@
             seconds--;
             let minutes = Math.floor(seconds / 60);  // Minuten berechnen
             let displaySeconds = seconds % 60;  // Sekunden berechnen
+
+            if (seconds <= 0){
+                seconds = refreshTimer_s;
+            }
 
             // Timer im Format MM:SS anzeigen
             document.getElementById('timerDisplay').textContent =
@@ -81,44 +79,66 @@
         //////////////////
         // Auto Refresh //
         //////////////////
+        const priceListDiv = document.getElementById("price-list");
+        const layout = {
+            title: 'Simple Scatter Plot',
+            xaxis: {
+                title: 'X Axis Label'
+            },
+            yaxis: {
+                title: 'Y Axis Label'
+            }
+        };
+
+        function fetchNewData() {
+            var newData;
+            fetch('http://127.0.0.1:5000/getNewData')
+            .then(response => response.json())
+            .then(data => newData = data)
+            .catch(error => console.error('Error:', error));
+
+            ///////////
+            // Graph //
+            ///////////
+            console.log(newData)
+            Plotly.newPlot('graph', newData, layout);
+
+            // Schleife durch die Getränke und Erstellen der Listeneinträge
+            newData.forEach(beverage => {
+                // Erstelle card
+                const card = document.createElement("div");
+                const cardBody = document.createElement("div");
+                const name = document.createElement("div");
+                const price = document.createElement("div");
+
+                // Klassen zuweisen
+                card.className = "card justify-content-center";
+                cardBody.className = "card-body row p-0 justify-content-center";
+                name.className = "col";
+                price.className = "col rightAligend";
+
+                // Style setzen
+                card.style = "width:25rem; height:2rem;"
+                price.style = "float: right"
+
+                // Werte reinschreiben
+                name.textContent = beverage.name;
+                price.textContent = beverage.price + " €";
+
+                // Eineinander einhängen
+                cardBody.appendChild(name);
+                cardBody.appendChild(price);
+                card.appendChild(cardBody);
+                priceListDiv.appendChild(card);
+            });
+        }
+
+        fetchNewData();
+
         setInterval(function() {
-            location.reload();
+            fetchNewData();
         }, refreshTimer_s * 1000);
 
-        ////////////////
-        // Preisliste //
-        ////////////////
-        const prices = {{ prices|tojson|safe }};  
-        const priceListDiv = document.getElementById("price-list");
-
-        // Schleife durch die Getränke und Erstellen der Listeneinträge
-        prices.forEach(beverage => {
-            // Erstelle card
-            const card = document.createElement("div");
-            const cardBody = document.createElement("div");
-            const name = document.createElement("div");
-            const price = document.createElement("div");
-
-            // Klassen zuweisen
-            card.className = "card justify-content-center";
-            cardBody.className = "card-body row p-0 justify-content-center";
-            name.className = "col";
-            price.className = "col rightAligend";
-
-            // Style setzen
-            card.style = "width:25rem; height:2rem;"
-            price.style = "float: right"
-
-            // Werte reinschreiben
-            name.textContent = beverage.name;
-            price.textContent = beverage.price + " €";
-
-            // Eineinander einhängen
-            cardBody.appendChild(name);
-            cardBody.appendChild(price);
-            card.appendChild(cardBody);
-            priceListDiv.appendChild(card);
-        });
     </script>
 
 </html>
