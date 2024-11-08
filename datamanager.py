@@ -158,17 +158,13 @@ def write_history_change(new_prices):
     check_history_exists()
 
     # neuen timestamp setzen
-    current_time = time.strftime("%H:%M", time.localtime())
+    current_time = time.strftime("%H:%M:%S", time.localtime())
     data = get_history_data()
     data["history"]["time"].append(current_time)
 
     # neue Preise in json einfügen
-    data["history"]["beverages"][0]["prices"].append(new_prices["bier03l"])
-    data["history"]["beverages"][1]["prices"].append(new_prices["bier05l"])
-    data["history"]["beverages"][2]["prices"].append(new_prices["mische"])
-    data["history"]["beverages"][3]["prices"].append(new_prices["shot"])
-    data["history"]["beverages"][4]["prices"].append(new_prices["cider"])
-    data["history"]["beverages"][5]["prices"].append(new_prices["bachwasser"])
+    for i in range(len(new_prices)):
+        data["history"]["beverages"][i]["prices"].append(new_prices[i])
 
     with open(jsonPath, 'w') as file:
         json.dump(data, file, indent=4)

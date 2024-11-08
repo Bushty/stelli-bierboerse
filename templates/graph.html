@@ -103,8 +103,26 @@
             ///////////
             // Graph //
             ///////////
+
+
+            // Funktion, um Sekunden aus der Zeit zu entfernen
+            function removeSeconds(time) {
+                // Zerlege die Zeit im Format "HH:MM:SS"
+                const [hours, minutes] = time.split(':');
+                // Gib die Zeit im Format "HH:MM" zurück
+                return `${hours}:${minutes}`;
+            };
+
+            for (let i=0; i<newData.history.time.length; i++) {
+                newData.history.time[i] = removeSeconds(newData.history.time[i]);
+            }
+
+            console.log(newData);
+
+
             var plotData = [];
             var maxPrice = 0;
+
             for(const beverage of newData.history.beverages) {
                 const trace = {
                     y: beverage.prices,
