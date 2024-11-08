@@ -32,7 +32,7 @@
                 <div id="graph"></div>
             </div>
 
-            <div class="col-3 row" id="price-list">
+            <div class="col-3 row">
 
                 <h1>Preisliste</h1>
 
@@ -43,6 +43,9 @@
                             <div class="timer-display" id="timerDisplay">Timer</div>
                         </div>
                     </div>
+                </div>
+
+                <div class="row" id="price-list">
                 </div>
             </div>
         </div>
@@ -76,35 +79,64 @@
                 `${minutes.toString().padStart(2, '0')}:${displaySeconds.toString().padStart(2, '0')}`;
         }, 1000);
 
-        //////////////////
-        // Auto Refresh //
-        //////////////////
-        const priceListDiv = document.getElementById("price-list");
-        const layout = {
-            title: 'Simple Scatter Plot',
-            xaxis: {
-                title: 'X Axis Label'
-            },
-            yaxis: {
-                title: 'Y Axis Label'
-            }
-        };
+        //////////////
+        // Fetching //
+        //////////////
 
-        function fetchNewData() {
-            var newData;
-            fetch('http://127.0.0.1:5000/getNewData')
-            .then(response => response.json())
-            .then(data => newData = data)
-            .catch(error => console.error('Error:', error));
+        async function fetchData() {
+            try {
+                const response = await fetch('http://127.0.0.1:5000/getData');
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.json()
+                return data;
+                
+            } catch (error) {
+                console.error('There was a problem with the fetch operation:', error);
+            }
+        }
+
+        async function refreshData() {
+            const newData = await fetchData();
 
             ///////////
             // Graph //
             ///////////
-            console.log(newData)
-            Plotly.newPlot('graph', newData, layout);
+            var plotData = [];
+            var maxPrice = 0;
+            for(const beverage of newData.history.beverages) {
+                const trace = {
+                    y: beverage.prices,
+                    x: newData.history.time,
+                    mode: "lines",
+                    name: beverage.name
+                };
+                plotData.push(trace);
+
+                if(Math.max(...beverage.prices) > maxPrice){
+                    maxPrice = Math.max(...beverage.prices);
+                }
+            }
+
+            const layout = {
+                title: 'Bieraktie',
+                xaxis: {
+                    title: 'Uhrzeit'
+                },
+                yaxis: {
+                    range: [0, maxPrice + 0.5],
+                    title: 'Preis',
+                }
+            };
+            Plotly.newPlot('graph', plotData, layout);
+
+            // priceDivList leeren
+            const priceListDiv = document.getElementById("price-list");
+            priceListDiv.innerHTML = '';
 
             // Schleife durch die Getränke und Erstellen der Listeneinträge
-            newData.forEach(beverage => {
+            for(const beverage of newData.history.beverages) {
                 // Erstelle card
                 const card = document.createElement("div");
                 const cardBody = document.createElement("div");
@@ -123,22 +155,21 @@
 
                 // Werte reinschreiben
                 name.textContent = beverage.name;
-                price.textContent = beverage.price + " €";
+                price.textContent = beverage.prices[beverage.prices.length - 1] + " €";
 
                 // Eineinander einhängen
                 cardBody.appendChild(name);
                 cardBody.appendChild(price);
                 card.appendChild(cardBody);
                 priceListDiv.appendChild(card);
-            });
+            }
         }
 
-        fetchNewData();
+        refreshData();
 
         setInterval(function() {
-            fetchNewData();
+            refreshData();
         }, refreshTimer_s * 1000);
-
     </script>
 
 </html>

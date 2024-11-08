@@ -10,113 +10,17 @@
     <div class="container card shadow p-4 mx-auto my-5">
         <h1 class="mb-3 text-center">Bier Broker</h1>
 
-            <!--
-                <div class="card my-2" style = "width:6rem; height:2rem;">
-                    <div class="card-body p-0">
-                        <div class="container timer-container">
-                            <div class="timer-display" id="timerDisplay">Timer</div>
-                        </div>
-                    </div>
+            
+        <div class="card my-2" style = "width:6rem; height:2rem;">
+            <div class="card-body p-0">
+                <div class="container timer-container">
+                    <div class="timer-display" id="timerDisplay">Timer</div>
                 </div>
-            -->
+            </div>
+        </div>    
 
         <div id="buttons" class="mb-3">
-            <div class="row">
-
-                <div class="col">
-                    <div class="row alert alert-dark mx-auto">
-                        <div class="col-4">
-                            <h3 class="label label-primary">Bier 0,3l</h3>
-                        </div>
-                        <div class="col-6">
-                            <input type="number" id="bier03_anzahl" min="0" value="0" oninput="calculateTotalPrice()">
-                        </div>
-                        <div class="col">
-                            <span id="bier03_price">1.50</span>
-                            <span>€</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col col-lg-*">
-                    <div class="row alert alert-dark mx-auto">
-                        <div class="col-4">
-                            <h3 class="label label-primary">Bier 0,5l</h3>
-                        </div>
-                        <div class="col-6">
-                            <input type="number" id="bier05_anzahl" min="0" value="0" oninput="calculateTotalPrice()">
-                        </div>
-                        <div class="col">
-                            <span id="bier05_price">2.00</span>
-                            <span>€</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col">
-                    <div class="row alert alert-dark mx-auto">
-                        <div class="col-4">
-                            <h3 class="label label-primary">Mische</h3>
-                        </div>
-                        <div class="col-6">
-                            <input type="number" id="mische_anzahl" min="0" value="0" oninput="calculateTotalPrice()">
-                        </div>
-                        <div class="col">
-                            <span id="mische_price">3.00</span>
-                            <span>€</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col col-lg-*">
-                    <div class="row alert alert-dark mx-auto">
-                        <div class="col-4">
-                            <h3 class="label label-primary">Shot</h3>
-                        </div>
-                        <div class="col-6">
-                            <input type="number" id="shot_anzahl" min="0" value="0" oninput="calculateTotalPrice()">
-                        </div>
-                        <div class="col">
-                            <span id="shot_price">1.00</span>
-                            <span>€</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col">
-                    <div class="row alert alert-dark mx-auto">
-                        <div class="col-4">
-                            <h3 class="label label-primary">Cider</h3>
-                        </div>
-                        <div class="col-6">
-                            <input type="number" id="cider_anzahl" min="0" value="0" oninput="calculateTotalPrice()">
-                        </div>
-                        <div class="col">
-                            <span id="cider_preis">2.00</span>
-                            <span>€</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col col-lg-*">
-                    <div class="row alert alert-dark mx-auto">
-                        <div class="col-4">
-                            <h3 class="label label-primary">Bachwasser</h3>
-                        </div>
-                        <div class="col-6">
-                            <input type="number" id="bachwasser_anzahl" min="0" value="0" oninput="calculateTotalPrice()">
-                        </div>
-                        <div class="col">
-                            <span id="bachwasser_preis">2.00</span>
-                            <span>€</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            
         </div>
 
         <div class="mb-3 text-center ">
@@ -140,86 +44,157 @@
         ////////////
         // Config //
         ////////////
-        const config = {{ config|tojson|safe }}
+        const config = {{ config|tojson|safe }};
+        const initData = {{ data|tojson|safe }};
         const refreshTimer_s = config.intervall_s;
+
+        let current_price = [];
+        for(const beverage of initData.history.beverages) {
+            current_price.push(beverage.prices[beverage.prices.length - 1]);
+        }
 
         ///////////
         // Timer //
         ///////////
-        // let seconds = refreshTimer_s;
-        // timer = setInterval(function() {
-        //     seconds--;
-        //     let minutes = Math.floor(seconds / 60);  // Minuten berechnen
-        //     let displaySeconds = seconds % 60;  // Sekunden berechnen
-        //     // Timer im Format MM:SS anzeigen
-        //     document.getElementById('timerDisplay').textContent =
-        //         `${minutes.toString().padStart(2, '0')}:${displaySeconds.toString().padStart(2, '0')}`;
-        // }, 1000);
+        let seconds = refreshTimer_s;
+        timer = setInterval(function() {
+            seconds--;
+            let minutes = Math.floor(seconds / 60);  // Minuten berechnen
+            let displaySeconds = seconds % 60;  // Sekunden berechnen
+            if (seconds <= 0){
+                seconds = refreshTimer_s;
+            }
+            // Timer im Format MM:SS anzeigen
+            document.getElementById('timerDisplay').textContent =
+                `${minutes.toString().padStart(2, '0')}:${displaySeconds.toString().padStart(2, '0')}`;
+        }, 1000);
 
-
-        ////////////////////
-        // Fetch new Data //
-        ////////////////////
-        var prices = {{ prices|tojson|safe }}
-        var bier03_price, bier05_price, mische_price, shot_price, cider_price, bachwasser_price;
-
-        function fetchNewData() {
-            fetch('http://127.0.0.1:5000/getNewPrices')
-            .then(response => response.json())
-            .then(data => prices = data)
-            .catch(error => console.error('Error:', error));
-
-            bier03_price = prices[0].price;
-            bier05_price = prices[1].price;
-            mische_price = prices[2].price;
-            shot_price = prices[3].price;
-            cider_price = prices[4].price;
-            bachwasser_price = prices[5].price;
-
-            document.getElementById('bier03_price').innerText = bier03_price;
-            document.getElementById('bier05_price').innerText = bier05_price;
-            document.getElementById('mische_price').innerText = mische_price;
-            document.getElementById('shot_price').innerText = shot_price;
-            document.getElementById('cider_preis').innerText = cider_price;
-            document.getElementById('bachwasser_preis').innerText = bachwasser_price;
+        //////////////
+        // Fetching //
+        //////////////
+        async function fetchData() {
+            try {
+                const response = await fetch('http://127.0.0.1:5000/getData');
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.json()
+                return data;
+                
+            } catch (error) {
+                console.error('There was a problem with the fetch operation:', error);
+            }
         }
-        setInterval(function() {
-            fetchNewData()
-        }, refreshTimer_s * 1000);
-        fetchNewData();
-    
+
+        //////////////////////
+        // Generate Buttons //
+        //////////////////////
+        function generateButtons(){
+            const buttonsDiv = document.getElementById("buttons");
+            let i = 0;
+            for(const beverage of initData.history.beverages) {                
+                // Create the outer div (col)
+                const colDiv = document.createElement('div');
+                colDiv.classList.add('col');
+                
+                // Create the row div with alert class
+                const rowDiv = document.createElement('div');
+                rowDiv.classList.add('row', 'alert', 'alert-dark', 'mx-auto');
+                
+                // Create the col-4 div for the name
+                const colNameDiv = document.createElement('div');
+                colNameDiv.classList.add('col-4');
+                const h3 = document.createElement('h3');
+                h3.classList.add('label', 'label-primary');
+                h3.textContent = beverage.name;
+                colNameDiv.appendChild(h3);
+                
+                // Create the col-6 div for the input field
+                const colInputDiv = document.createElement('div');
+                colInputDiv.classList.add('col-6');
+                const input = document.createElement('input');
+                input.type = 'number';
+                input.id = `${beverage.name}_anzahl`;
+                input.min = 0;
+                input.value = 0;
+                input.setAttribute('oninput', 'calculateTotalPrice()');
+                colInputDiv.appendChild(input);
+                
+                // Create the col div for the price
+                const colPriceDiv = document.createElement('div');
+                colPriceDiv.classList.add('col');
+                const priceSpan = document.createElement('span');
+                priceSpan.id = `${beverage.name}_price`;
+                priceSpan.textContent = beverage.prices[beverage.prices.length - 1];
+                const euroSpan = document.createElement('span');
+                euroSpan.textContent = ' €';
+                colPriceDiv.appendChild(priceSpan);
+                colPriceDiv.appendChild(euroSpan);
+                
+                // Append all sub-elements to the row div
+                rowDiv.appendChild(colNameDiv);
+                rowDiv.appendChild(colInputDiv);
+                rowDiv.appendChild(colPriceDiv);
+                
+                // Append the row div to the col div
+                colDiv.appendChild(rowDiv);
+                
+                // Finally, append the col div to the container
+                buttonsDiv.appendChild(colDiv);
+
+                i++;
+            }
+        }
+
+        //////////////////////
+        // Refresh new Data //
+        //////////////////////
+        async function refreshData() {
+            const newData = await fetchData();
+
+            current_price = [];
+            for(const beverage of initData.history.beverages) {
+                current_price.push(beverage.prices[beverage.prices.length - 1]);
+            }
+
+            for(const beverage of newData.history.beverages) {
+                const priceSpan = document.getElementById(`${beverage.name}_price`);
+                priceSpan.textContent = beverage.prices[beverage.prices.length - 1];
+            }
+        }
+
+        ///////////////////////////
+        // Calculate Total Price //
+        ///////////////////////////
         function calculateTotalPrice() {
-            const bier03Count = parseInt(document.getElementById('bier03_anzahl').value)         || 0;
-            const bier05Count = parseInt(document.getElementById('bier05_anzahl').value)         || 0;
-            const mischeCount = parseInt(document.getElementById('mische_anzahl').value)         || 0;
-            const shotCount = parseInt(document.getElementById('shot_anzahl').value)             || 0;
-            const ciderCount = parseInt(document.getElementById('cider_anzahl').value)           || 0;
-            const bachwasserCount = parseInt(document.getElementById('bachwasser_anzahl').value) || 0;
+            const div = document.getElementById("buttons");
+            const inputs = div.querySelectorAll('input');
+            const values = [];
 
-            const totalPrice = 
-                (bier03_price * bier03Count) +
-                (bier05_price * bier05Count) +
-                (mische_price * mischeCount) +
-                (shot_price * shotCount) +
-                (cider_price * ciderCount) +
-                (bachwasser_price * bachwasserCount);
+            inputs.forEach(input => {
+                values.push(input.value);
+            });
 
-            document.getElementById('price_total').innerText = totalPrice.toFixed(2);
-
+            let sum = 0;
+            for(let i=0; i<values.length; i++) {
+                sum += values[i] * current_price[i];
+            }
+            document.getElementById('price_total').innerText = sum.toFixed(2);
         }
 
+        /////////////////////////////
+        // Invest Button to submit //
+        /////////////////////////////
         function invest() {
             // Collect input values
-            const investmentData = {
-                "bier03l": parseInt(document.getElementById('bier03_anzahl').value) || 0,
-                "bier05l": parseInt(document.getElementById('bier05_anzahl').value) || 0,
-                "mische": parseInt(document.getElementById('mische_anzahl').value) || 0,
-                "shot": parseInt(document.getElementById('shot_anzahl').value) || 0,
-                "cider": parseInt(document.getElementById('cider_anzahl').value) || 0,
-                "bachwasser": parseInt(document.getElementById('bachwasser_anzahl').value) || 0
-            };
+            const div = document.getElementById("buttons");
+            const inputs = div.querySelectorAll('input[type="number"]');
+            const values = [];
 
-            console.log(investmentData);
+            inputs.forEach(input => {
+                values.push(parseInt(input.value) || 0);
+            });
+            console.log(values)
 
             // Send investment data to the server (assuming there's an endpoint to handle it)
             fetch('/process_investment', {
@@ -227,7 +202,7 @@
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(investmentData)
+                body: JSON.stringify(values)
             })
             .then(data => {
                 console.log('Investment processed:', data);
@@ -238,6 +213,15 @@
             document.querySelectorAll('input[type="number"]').forEach(input => input.value = '');
             document.getElementById('price_total').innerText = '0';
         }
+
+        ///////////
+        // Start //
+        ///////////
+        generateButtons();
+        refreshData();
+        setInterval(function() {
+            refreshData()
+        }, refreshTimer_s * 1000);
     </script>
 </body>
 </html>

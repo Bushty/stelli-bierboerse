@@ -157,35 +157,14 @@ def calculate_financials(sales_numbers, history_config):
     factor_price_decrease = config_data["factor_price_decrease"]
 
     # get old prices from history_config
-    old_prices = {
-        "bier03l": 0.00,
-        "bier05l": 0.00,
-        "mische": 0.00,
-        "shot": 0.00,
-        "cider": 0.00,
-        "bachwasser": 0.00
-    }
+    old_prices = []
     history_beverages = history_config['history']['beverages']
-    
     for beverage in history_beverages:
-        if beverage["name"] == "Bier 0.3L":
-            old_prices["bier03l"] = beverage["prices"][-1]
-        if beverage["name"] == "Bier 0.5L":
-            old_prices["bier05l"] = beverage["prices"][-1]
-        if beverage["name"] == "Mische":
-            old_prices["mische"] = beverage["prices"][-1]
-        if beverage["name"] == "Shot":
-            old_prices["shot"] = beverage["prices"][-1]
-        if beverage["name"] == "Cider":
-            old_prices["cider"] = beverage["prices"][-1]
-        if beverage["name"] == "Bachwasser":
-            old_prices["bachwasser"] = beverage["prices"][-1]
-
-    
+        old_prices.append(beverage["prices"][-1])
 
     # get range of sales
-    lowest = min(sales_numbers.values())
-    highest = max(sales_numbers.values())
+    lowest = min(sales_numbers)
+    highest = max(sales_numbers)
 
     range = highest - lowest
     average = range / 2
