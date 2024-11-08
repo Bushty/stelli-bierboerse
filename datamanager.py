@@ -21,8 +21,9 @@ def check_history_exists():
     if not os.path.exists(file_path):
         data = {
             "config": {
-                "intervall_s": 300.0,
-                "factor_price_increase": 1.05,
+                "intervall_s": 5,
+                "show_history_h": 2,
+                "factor_price_increase": 1.3,
                 "factor_price_decrease": 0.95,
                 "beverages": [
                     {
@@ -65,7 +66,7 @@ def check_history_exists():
             },
             "history": {
                 "time": [
-                        "17:00"
+                    "15:00:00"
                 ],
                 "beverages": [
                     {
@@ -81,21 +82,9 @@ def check_history_exists():
                         ]
                     },
                     {
-                        "name": "Cider",
-                        "prices": [
-                            2.0
-                        ]
-                    },
-                    {
                         "name": "Mische",
                         "prices": [
                             3.0
-                        ]
-                    },
-                    {
-                        "name": "Bachwasser",
-                        "prices": [
-                            2.0
                         ]
                     },
                     {
@@ -103,11 +92,23 @@ def check_history_exists():
                         "prices": [
                             1.0
                         ]
+                    },
+                    {
+                        "name": "Cider",
+                        "prices": [
+                            2.0
+                        ]
+                    },
+                    {
+                        "name": "Bachwasser",
+                        "prices": [
+                            2.0
+                        ]
                     }
                 ]
             }
         }
-
+        
         with open(file_path, 'w') as file:
             json.dump(data, file, indent=4)
 

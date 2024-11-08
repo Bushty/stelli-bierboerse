@@ -99,19 +99,21 @@
                 
                 // Create the row div with alert class
                 const rowDiv = document.createElement('div');
-                rowDiv.classList.add('row', 'alert', 'alert-dark', 'mx-auto');
+                rowDiv.classList.add('row', 'alert', 'alert-dark', 'mx-auto', 'p-1');
                 
-                // Create the col-4 div for the name
+                // Create the col-3 div for the name
                 const colNameDiv = document.createElement('div');
-                colNameDiv.classList.add('col-4');
+                colNameDiv.classList.add('col-3');
+                colNameDiv.style="display: flex; flex-direction: row; place-items: center;"
                 const h3 = document.createElement('h3');
                 h3.classList.add('label', 'label-primary');
                 h3.textContent = beverage.name;
                 colNameDiv.appendChild(h3);
                 
-                // Create the col-6 div for the input field
+                // Create the col-3 div for the input field
                 const colInputDiv = document.createElement('div');
-                colInputDiv.classList.add('col-6');
+                colInputDiv.classList.add('col-2');
+                colInputDiv.style = "display: grid; place-items: center;"
                 const input = document.createElement('input');
                 input.type = 'number';
                 input.id = `${beverage.name}_anzahl`;
@@ -120,9 +122,44 @@
                 input.setAttribute('oninput', 'calculateTotalPrice()');
                 colInputDiv.appendChild(input);
                 
+                // Create the col-3 div for the up and down field
+                const colUpDownDiv = document.createElement('div');
+                colUpDownDiv.classList.add('col-4');
+                colUpDownDiv.style="display: flex; flex-direction: row; place-items: center;"
+                const up = document.createElement('button');
+                const down = document.createElement('button');
+                // up
+                up.id = `${beverage.name}_up`;
+                up.setAttribute('oninput', 'calculateTotalPrice()');
+                up.textContent = "+"
+                up.style = "width:5rem; height:2rem;"
+                up.addEventListener('click', () => {
+                    // Increase the input value by 1
+                    let currentValue = parseInt(input.value) || 0;
+                    input.value = currentValue + 1;
+                    calculateTotalPrice();  // Recalculate the total price after the change
+                });
+
+                // down
+                down.id = `${beverage.name}_down`;
+                down.setAttribute('oninput', 'calculateTotalPrice()');
+                down.textContent = "-"
+                down.style = "width:5rem; height:2rem;"
+                down.addEventListener('click', () => {
+                    // Decrease the input value by 1 (but not below 0)
+                    let currentValue = parseInt(input.value) || 0;
+                    if (currentValue > 0) {
+                        input.value = currentValue - 1;
+                    }
+                    calculateTotalPrice();  // Recalculate the total price after the change
+                });
+                colUpDownDiv.appendChild(up);
+                colUpDownDiv.appendChild(down);
+                
                 // Create the col div for the price
                 const colPriceDiv = document.createElement('div');
                 colPriceDiv.classList.add('col');
+                colPriceDiv.style="display: flex; flex-direction: row; place-items: center;"
                 const priceSpan = document.createElement('span');
                 priceSpan.id = `${beverage.name}_price`;
                 priceSpan.textContent = beverage.prices[beverage.prices.length - 1];
@@ -134,6 +171,7 @@
                 // Append all sub-elements to the row div
                 rowDiv.appendChild(colNameDiv);
                 rowDiv.appendChild(colInputDiv);
+                rowDiv.appendChild(colUpDownDiv);
                 rowDiv.appendChild(colPriceDiv);
                 
                 // Append the row div to the col div
@@ -152,7 +190,10 @@
         async function refreshData() {
             const newData = await fetchData();
 
-            current_price = [];
+            // Clear current_price array
+            current_price.length = 0;
+
+            // save new prices
             for(const beverage of initData.history.beverages) {
                 current_price.push(beverage.prices[beverage.prices.length - 1]);
             }
@@ -169,15 +210,22 @@
         function calculateTotalPrice() {
             const div = document.getElementById("buttons");
             const inputs = div.querySelectorAll('input');
+            const price_spans = document.querySelectorAll('span[id$="_price"]');
             const values = [];
+            const latest_price = [];
+
+            price_spans.forEach(price => {
+                latest_price.push(price.textContent);
+            });
 
             inputs.forEach(input => {
                 values.push(input.value);
             });
 
+
             let sum = 0;
             for(let i=0; i<values.length; i++) {
-                sum += values[i] * current_price[i];
+                sum += values[i] * latest_price[i];
             }
             document.getElementById('price_total').innerText = sum.toFixed(2);
         }
@@ -194,7 +242,6 @@
             inputs.forEach(input => {
                 values.push(parseInt(input.value) || 0);
             });
-            console.log(values)
 
             // Send investment data to the server (assuming there's an endpoint to handle it)
             fetch('/process_investment', {
@@ -210,7 +257,7 @@
             .catch(error => console.error('Error processing investment:', error));
 
             // Reset input fields and total price
-            document.querySelectorAll('input[type="number"]').forEach(input => input.value = '');
+            document.querySelectorAll('input[type="number"]').forEach(input => input.value = '0');
             document.getElementById('price_total').innerText = '0';
         }
 
@@ -220,7 +267,7 @@
         generateButtons();
         refreshData();
         setInterval(function() {
-            refreshData()
+            refreshData();
         }, refreshTimer_s * 1000);
     </script>
 </body>

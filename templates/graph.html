@@ -103,23 +103,6 @@
             ///////////
             // Graph //
             ///////////
-
-
-            // Funktion, um Sekunden aus der Zeit zu entfernen
-            function removeSeconds(time) {
-                // Zerlege die Zeit im Format "HH:MM:SS"
-                const [hours, minutes] = time.split(':');
-                // Gib die Zeit im Format "HH:MM" zurück
-                return `${hours}:${minutes}`;
-            };
-
-            for (let i=0; i<newData.history.time.length; i++) {
-                newData.history.time[i] = removeSeconds(newData.history.time[i]);
-            }
-
-            console.log(newData);
-
-
             var plotData = [];
             var maxPrice = 0;
 
@@ -137,16 +120,33 @@
                 }
             }
 
+            // Calculate the positions for every 5th x-axis label
+            const tickInterval = 5;
+            const tickVals = [];
+            const tickLabels = [];
+
+            for (let i = 0; i < newData.history.time.length; i++) {
+                if (i % tickInterval === 0) {
+                    tickVals.push(newData.history.time[i]);
+                    tickLabels.push(newData.history.time[i]);  // You can customize this if needed
+                }
+            }
+            tickVals.push(newData.history.time[newData.history.time.length-1]);
+            tickLabels.push(newData.history.time[newData.history.time.length-1]);
+
             const layout = {
                 title: 'Bieraktie',
                 xaxis: {
-                    title: 'Uhrzeit'
+                    title: 'Uhrzeit',
+                    tickvals: tickVals,   // Specify which tick values to show
+                    ticktext: tickLabels, // The labels to show at those tick positions
                 },
                 yaxis: {
                     range: [0, maxPrice + 0.5],
                     title: 'Preis',
                 }
             };
+
             Plotly.newPlot('graph', plotData, layout);
 
             // priceDivList leeren

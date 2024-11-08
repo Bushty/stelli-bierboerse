@@ -45,12 +45,7 @@ def calculate_financials(sales_numbers, history_config):
     sales_range = highest - lowest
     average = sales_range / 2
     range_weight = sales_range / 10
-
-    # print(f"sales_range: {sales_range}")
-    # print(f"average: {average}")
-    # print(f"range_weight: {range_weight}")
-    # print(f"power: {pow(1, range_weight)}")
-
+    
     # update prices
     for i in range(len(old_prices)):
         if float(sales_numbers[i]) > average:
