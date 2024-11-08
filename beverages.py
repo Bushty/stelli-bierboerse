@@ -1,5 +1,3 @@
-
-
 class Beverage:
     def __init__(self, name, ini_price, min_price, max_price, use_max_price):
         name = name

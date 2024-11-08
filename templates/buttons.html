@@ -109,7 +109,7 @@
                 h3.classList.add('label', 'label-primary');
                 h3.textContent = beverage.name;
                 colNameDiv.appendChild(h3);
-                
+
                 // Create the col-3 div for the input field
                 const colInputDiv = document.createElement('div');
                 colInputDiv.classList.add('col-2');
@@ -121,6 +121,11 @@
                 input.value = 0;
                 input.setAttribute('oninput', 'calculateTotalPrice()');
                 colInputDiv.appendChild(input);
+                input.addEventListener('keydown', function(event) {
+                    if (event.key === 'Enter') {  // Check if Enter key was pressed
+                        invest();  // Call the function
+                    }
+                });
                 
                 // Create the col-3 div for the up and down field
                 const colUpDownDiv = document.createElement('div');
@@ -207,6 +212,9 @@
         ///////////////////////////
         // Calculate Total Price //
         ///////////////////////////
+        function roundDownToTenth(x) {
+            return Math.floor(x * 10) / 10;
+        }
         function calculateTotalPrice() {
             const div = document.getElementById("buttons");
             const inputs = div.querySelectorAll('input');
@@ -227,7 +235,7 @@
             for(let i=0; i<values.length; i++) {
                 sum += values[i] * latest_price[i];
             }
-            document.getElementById('price_total').innerText = sum.toFixed(2);
+            document.getElementById('price_total').innerText = roundDownToTenth(sum);
         }
 
         /////////////////////////////

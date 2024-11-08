@@ -21,15 +21,15 @@ def check_history_exists():
     if not os.path.exists(file_path):
         data = {
             "config": {
-                "intervall_s": 5,
+                "intervall_s": 120,
                 "show_history_h": 2,
-                "factor_price_increase": 1.3,
-                "factor_price_decrease": 0.95,
+                "factor_price_increase": 1.25,
+                "factor_price_decrease": 0.91,
                 "beverages": [
                     {
                         "name": "Bier 0.3l",
                         "default_price": 1.5,
-                        "price_min": 0.5,
+                        "price_min": 0.6,
                         "price_max": 10.0
                     },
                     {
@@ -39,27 +39,27 @@ def check_history_exists():
                         "price_max": 10.0
                     },
                     {
-                        "name": "Cider",
-                        "default_price": 2.0,
-                        "price_min": 1.0,
-                        "price_max": 10.0
-                    },
-                    {
                         "name": "Mische",
                         "default_price": 3.0,
-                        "price_min": 1.5,
-                        "price_max": 10.0
-                    },
-                    {
-                        "name": "Bachwasser",
-                        "default_price": 2.0,
-                        "price_min": 1.0,
+                        "price_min": 1.3,
                         "price_max": 10.0
                     },
                     {
                         "name": "Shot",
                         "default_price": 1.0,
-                        "price_min": 0.5,
+                        "price_min": 0.2,
+                        "price_max": 10.0
+                    },
+                    {
+                        "name": "Cider",
+                        "default_price": 2.0,
+                        "price_min": 1.2,
+                        "price_max": 10.0
+                    },
+                    {
+                        "name": "Bachwasser",
+                        "default_price": 2.0,
+                        "price_min": 0.6,
                         "price_max": 10.0
                     }
                 ]

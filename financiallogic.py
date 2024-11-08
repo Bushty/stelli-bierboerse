@@ -48,6 +48,7 @@ def calculate_financials(sales_numbers, history_config):
     
     # update prices
     for i in range(len(old_prices)):
+
         if float(sales_numbers[i]) > average:
             new_price = float(old_prices[i]) * (pow(factor_price_increase, range_weight))
             new_price_shortened = round(new_price, 2)
